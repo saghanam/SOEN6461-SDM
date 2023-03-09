@@ -1,0 +1,400 @@
+\chapter{iGo}
+\section{PROBLEM 1}
+The iGo bike sharing system in Montreal, Quebec, Canada is a popular mode of transportation for many people. Currently, users need to physically go to a iGo station to rent a bike, which can be inconvenient and time-consuming. Additionally, users may face issues with the availability of bikes or empty docks at certain stations, further complicating the renting process. It leads to an inefficient and potentially frustrating experience for users that ultimately discourages them from using the iGo system.\\ \cite{Bikesharing}
+
+To address this, an online vending machine for iGo is proposed to enable users to rent iGo bikes online, from the comfort of their own devices. This would eliminate the need for users to physically visit a iGo station, allowing for a more convenient and streamlined experience. The online vending machine could also provide users with real-time information on bike and dock availability, allowing them to plan their trips more effectively.\\
+
+Overall, the proposed online vending machine for iGo aims to improve the accessibility and efficiency of the iGo bike sharing system for its users.\cite{Pricing}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.40]{images/BikePrices.png}
+    \caption{Subscription Charges}
+    \label{fig:my_label1}
+\end{figure}
+
+\newpage
+\subsection{Description}
+The solution is an online web application allowing a customer to purchase a iGo bike rental pass, top up their iGo account, and obtain a code to unlock a bike from a iGo station. The iGo Vending Machine will communicate with iGo system over an appropriate communication link.\\
+
+A user will be required to sign up for an account with the iGo Vending Machine on their first visit. In order to purchase a pass or top up their account, a user is required to link their iGo account with their iGo Vending Machine account. After signing up successfully, a user will be able to proceed with one or more transactions. Their iGo account will be linked to their iGo Vending Machine account and hence will be linked to all transactions made under their iGo Vending Machine account. A user will be able to use their existing iGo account to rent a bike from any iGo station.\\
+
+
+
+The iGo Vending Machine must be able to provide the following services to iGo users:
+\begin{enumerate}
+    \item A user must be able to sign up for a iGo Vending Machine account online, with their email address and be able to link their iGo account to their iGo Vending Machine account.
+    \item A user must be able to purchase a iGo bike rental pass, selecting from different types of passes, such as daily or monthly passes. The transaction could be made via Visa or Mastercard, or Paypal.
+    \item A user must be able to top up their iGo account balance to rent bikes.
+    \item A user must be able to view their existing iGo account balance.
+    \item A user must be able to view their iGo rental history and must be able to print out their rental history.
+    \item A user must be able to schedule their rental pass for a future date.
+    \item A user must be able to obtain a code to unlock a bike from a iGo station after making a successful transaction. The code must be valid for a limited time.
+    \item A user must be able to unlink any iGo accounts under their iGo Vending Machine account.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.40]{images/BixiStation.png}
+    \caption{Drop off station for bikes}
+\end{figure}
+
+
+
+The iGo Vending Machine will communicate each transaction to the iGo system and obtain verification that the transaction was successful. The iGo Vending Machine will connect with the iGo system to make sure transactions are successfully made.\\
+If iGo determines that the email exists in their database, a user will be required to log in or use another email to register. If iGo determines that the iGo account is linked to another existing iGo Vending Machine account, a user will not be able to link this iGo account to their iGo Vending Machine account unless that iGo Vending Machine account unlinks this iGo account on the iGo Vending Machine. In all cases, the iGo Vending Machine is required to display an explanation of the problem.\\
+The iGo Vending Machine will also maintain its internal log of transactions to facilitate resolving ambiguities arising from a connection failure in the middle of transactions between the iGo Vending Machine and the iGo system. Entries will be made in the log when a user registers an account, logs in and is working on their login session.
+
+
+
+\subsection{Project Assumption}
+For this project, it is assumed that the iGo bike sharing service will provide a secure and reliable application programming interface (API) for the online ticket vending machine to access and update ticket information, such as ticket availability and pricing. It is also assumed that the iGo system will be able to receive and process online ticket purchases made through the vending machine, and update the system with the appropriate information, such as the rental duration and the number of available bikes. Additionally, it is assumed that the online ticket vending machine will be integrated with a secure payment gateway that is capable of handling online transactions securely and efficiently.\\
+These assumptions are necessary for the successful development and implementation of the online ticket vending machine for iGo bike sharing service.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{PROBLEM 2}
+\subsection{Problem Domain Model}
+\subsubsection{Class Diagram}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.70]{images/ClassDiagram.png}
+    \caption{UML Class Diagram}
+\end{figure}
+Shown above are the class and package diagrams for iGo.
+
+The domain model of our iGo system, bike-sharing system, is represented by several classes and relationships between classes.\\
+
+The Trip class is the main class of the iGo system. It keeps the information of biking trips, including bike count, start date and time, bike type, customer and other parameters. This information is essential for renting a bike and will be updated after returning the bike.\\
+
+We have two types of customers, the regular one which rents bikes for one-path trips or who has a membership in the iGo system based on different plans. We have extra attributes in the member class to keep the contact information and membership number. They have common characteristics, such as name or age and card info as a parent class. The condition and features of different plans selected by customers are shown as plan class.\\
+
+The iGo class refers to attributes of bikes in the iGo system. The model of bike (regular or electrical), size, dock id and its availability are examples of attributes of this class.\\
+
+The information of dockes through the city and number of bikes they have are considered as Dock class.\\
+
+The system also includes other classes such as the ticket class that generates a ticket with unlock code. The unlock code is a temporary one to unlock the bike situated in the dock by the customer to start the journey.\\
+
+The Payment class represents the information of payment in different steps of the trip, including renting and returning based on the plan, customer type and time ride by customer.\\
+\subsubsection{Package Diagram}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.40]{images/UMLPackageDiagram.png}
+    \caption{UML Package Diagram}
+\end{figure}
+
+The above diagram shows the packages for iGo system that connects the bike system to the TVM. The application also stores the trip history of each user that collects the user data and uses to link the trip to the user.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{PROBLEM 3}
+\subsection{Mind Map}
+A mind map that illustrates the relationships that exist between various components of the whole idea.
+
+By brainstorming with our team on the different elements of the interview process, we identified the following key aspects / elements that we needed to consider – 
+\begin{enumerate}
+    \item Participants
+    \begin{itemize}
+        \item Interviewers - We needed to identify the people who could give us correct answers to our questions which required locating actual users of the iGo service which was to be our template for the iGO project. We were mindful of the fact that a customer who uses the service frequently would be able to reply with more details than a user who has only used iGo occasionally.
+        \item Interviewees – We took special care to make sure that the person giving the interview knew the interviewer and shared an ease of comfort in conversations with them to make the interview process comfortable for the interviewee.
+    \end{itemize} 
+    \item Medium – We also thought carefully about which medium we should conduct our interviews. Most of our decisions were taken to facilitate ease and comfort of the interviewees. So we chose to conduct it Online when they did not live nearby the interviewers. Since interviewees could feel added burden of appearing good on camera, we chose to conduct the interview only in the audio format. We also provided the interviewees with an early draft of our question sets to let them think of their answers beforehand.
+    \item Interview Perspective -  We also considered the different point of views we could take to ask our question. Within the User Perspective, interviewer will focus on questions about the user’s experience using the service in his life and how the service helped him in his life. The maintenance perspective is for the engineers of the systems working to keep the TVM error free to provide the best service. Risk analysis perspective dealt with questions related to finding out user actions that could harm the system like theft and accidents. Update and Extensibility perspective is for engineers working to add new services to the system to let them know which services are most asked for by the interviewees.
+    \item Question Topics – In this section we brainstormed over what different areas of the system we needed information for. Guided by these topics, we created our question. The second mindmap of this submission shows the breakdown of questions we brainstormed and researched either through interviews or external sources.
+    \item Information Sources – TO enhance the results of the information gathering phase through interviews, we took aid from other sources both to help identifying areas we were unfamiliar and needed interview for and also to crosscheck and validate the information given by the interviewers. BIXI’s official site ‘https://bixi.com/en/bixi-inc’ was of great help. We also went over reddit posts by BIXI customers to learn of their experiences with the BIXI system. We also found other posts on some travel review sites to add to our understanding of the system.\cite{MindMap}
+\end{enumerate}	
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.60]{images/MindMapElements.png}
+    \caption{Mind Map Elements}
+\end{figure}
+
+\newpage
+\subsection{Mind Map Interviews}
+The mind map interviews are conducted and the recording of each interview has been linked on the github repository. The transcription of each interview has been documented in the \nameref{Appendix} section of the document.
+
+\begin{figure}[H]
+    \includegraphics[width=0.9\linewidth,height=10cm]{images/MindMapInterviews.png}
+    \caption{Mind Map Interview Elements}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{PROBLEM 4}
+\subsection{Use Case Models - Spatial Relationship}
+A use case model here describes the proposed functionality of the system in terms of Users, iGo and Bank actors. It is the visual representation of system's behaviour that defines interactions between the system, Users and other actors. The use case model shows the relationship between use cases and actors.\cite{Unlock}
+
+\subsubsection{Rent Bike}
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{8cm}|p{8cm}| } 
+ \hline
+ \textbf{NAME} & Rent bike\\ 
+ \hline
+ \textbf{ID} & UC1  \\ 
+ \hline
+ \textbf{ACTORS} & User\\ 
+ \hline
+ \textbf{DESCRIPTION} & The User initiates renting a bike by selecting the number of trips or by renewing their old membership \\ 
+ \hline
+ \textbf{NORMAL FLOW} & \begin{enumerate}
+     \item The user selects the language
+     \item Inserts the payment card for validation
+     \item Chooses no of trips
+     \item Proceeds to payment
+ \end{enumerate} \\
+ \hline
+ \textbf{PRE-CONDITIONS} & User starts the interaction with the TVM\\
+ \hline
+ \textbf{POST-CONDITION} & User ends at payment for the no of trips selected\\
+ \hline
+ \textbf{EXCEPTIONS} & The user cancels the session\\
+ \hline
+\end{tabular}
+\caption{\label{demo-table}Use Case 1 - Rent bike use case description}
+\end{center}
+\end{table}
+
+\subsubsection{Validate Card}
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{8cm}|p{8cm}| } 
+ \hline
+ \textbf{NAME} & Validate card\\ 
+ \hline
+ \textbf{ID} & UC2  \\ 
+ \hline
+ \textbf{ACTORS} & User, Bank\\ 
+ \hline
+ \textbf{DESCRIPTION} & The user inserts the payment card to initiate the process for renting a bike \\ 
+ \hline
+ \textbf{NORMAL FLOW} & \begin{enumerate}
+     \item The user selects the language
+     \item Inserts the payment card for validation
+ \end{enumerate} \\
+ \hline
+ \textbf{PRE-CONDITIONS} & User initiates renting a bike by selecting language\\
+ \hline
+ \textbf{POST-CONDITION} & User chooses no of trips after validating card\\
+ \hline
+ \textbf{EXCEPTIONS} & The user cancels the session\\
+ \hline
+\end{tabular}
+\caption{\label{demo-table}Use Case 2 - Validate customer card case description}
+\end{center}
+\end{table}
+
+
+\subsubsection{Make Payment}
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{8cm}|p{8cm}| } 
+ \hline
+ \textbf{NAME} & Payment\\ 
+ \hline
+ \textbf{ID} & UC3  \\ 
+ \hline
+ \textbf{ACTORS} & User, Bank, TVM\\
+ \hline
+ \textbf{DESCRIPTION} & A payment receipt is produced after a successful transaction \\  
+ \hline
+ \textbf{NORMAL FLOW} & \begin{enumerate}
+     \item The user selects the language
+     \item Inserts the payment card for validation
+ \end{enumerate} \\
+ \hline
+ \textbf{PRE-CONDITIONS} & User initiates the payment after selecting no of trips\\
+ \hline
+ \textbf{POST-CONDITION} & User generates the payment/bike receipt\\
+ \hline
+ \textbf{EXCEPTIONS} & The payment fails\\
+ \hline
+\end{tabular}
+\caption{\label{demo-table}Use Case 3 - Payment case description}
+\end{center}
+\end{table}
+
+\subsubsection{Generate Ticket}
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{8cm}|p{8cm}| } 
+ \hline
+ \textbf{NAME} & Generate Ticket\\ 
+ \hline
+ \textbf{ID} & UC4  \\ 
+ \hline
+ \textbf{ACTORS} & User\\
+ \hline
+ \textbf{DESCRIPTION} & The user can select the mode of the receipt either via email or SMS or by printing it \\  
+ \hline
+ \textbf{NORMAL FLOW} & \begin{enumerate}
+     \item The user chooses the mode of receipt retrieval
+     \item If email or SMS mode selected user enters email address or phone number respectively
+ \end{enumerate} \\
+ \hline
+ \textbf{PRE-CONDITIONS} & After successful payment user chooses mode of receipt retrieval\\
+ \hline
+ \textbf{POST-CONDITION} & User unlocks the bike with the code provided in the receipt\\
+ \hline
+ \textbf{EXCEPTIONS} & Either email address or phone number is invalid\\
+ \hline
+\end{tabular}
+\caption{\label{demo-table}Use Case 4 - Generate Ticket case description}
+\end{center}
+\end{table}
+
+\subsubsection{Return Bike}
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{8cm}|p{8cm}| } 
+ \hline
+ \textbf{NAME} & Return bike\\ 
+ \hline
+ \textbf{ID} & UC5\\ 
+ \hline
+ \textbf{ACTORS} & User\\
+ \hline
+ \textbf{DESCRIPTION} & After trip completion user's trip info is updated by TVM and proceeds to return bike procedure \\  
+ \hline
+ \textbf{NORMAL FLOW} & \begin{enumerate}
+     \item User inserts the payment card for validation
+     \item The TVM updates user's trip info with per min cost and displays the final cost
+     \item User pays for the calculated cost
+ \end{enumerate} \\
+ \hline
+ \textbf{PRE-CONDITIONS} & User checks for the dock that has an empty spot\\
+ \hline
+ \textbf{POST-CONDITION} & User initiates the payment after the trip info update\\
+ \hline
+ \textbf{EXCEPTIONS} & \\
+ \hline
+\end{tabular}
+\caption{\label{demo-table}Use Case 5 - Return bike case description}
+\end{center}
+\end{table}
+
+\subsubsection{Update Trip}
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|p{8cm}|p{8cm}| } 
+ \hline
+ \textbf{NAME} & Update trip info\\ 
+ \hline
+ \textbf{ID} & UC6\\ 
+ \hline
+ \textbf{ACTORS} & TVM\\
+ \hline
+ \textbf{DESCRIPTION} & After trip completion user finds a dock with empty spot and inserts payment card for trip updation \\  
+ \hline
+ \textbf{NORMAL FLOW} & \begin{enumerate}
+     \item User inserts payment card and validates it to begin the return process
+     \item The TVM updates user's trip info with per min cost and displays the final cost
+ \end{enumerate} \\
+ \hline
+ \textbf{PRE-CONDITIONS} & User checks for the dock that has an empty spot\\
+ \hline
+ \textbf{POST-CONDITION} & User initiates the payment after the trip info update\\
+ \hline
+ \textbf{EXCEPTIONS} & N/A\\
+ \hline
+\end{tabular}
+\caption{\label{demo-table}Use Case 6 - Update trip info case description}
+\end{center}
+\end{table}
+
+\subsection{Use case Model Diagrams}
+\subsubsection{Renting a bike}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=17cm, height=12cm]{images/rentBixiUseCase.jpg}
+  \caption{Rent bike Use Case Model Diagram}
+  \label{fig:Rent bixi Case Model Diagram}
+\end{figure}
+
+\subsubsection{Returning a bike}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=17cm, height=12cm]{images/returnBixiUseCase.jpg}
+  \caption{Return bike Use Case Model Diagram}
+  \label{fig:Return bixi Case Model Diagram}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{PROBLEM 5}
+\subsection{Use Case Diagram - Temporal Relationship}
+In order to analyze the temporal relationships between the critical use cases and the order in which the steps are perform in a use case, we have constructed UML activity diagrams to visualize the details.
+\subsubsection{Signing up}
+This use case model indicates the steps to sign up an account via the application.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.60]{images/SignUpActivity.png}
+  \caption{Sign Up Activity Diagram}
+  \label{fig:Sign Up Activity Diagram}
+\end{figure}
+\newpage
+\subsubsection{Finding the station}
+This use case diagram shows how to find the station for returning the bike.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.70]{images/UserActivityfindingStation.png}
+  \caption{Finding a dock station}
+  \label{fig:finding_station}
+\end{figure}
+\newpage
+\subsubsection{Purchasing a ticket}
+The use case models below illustrate the details in the scenario of purchasing a ticket (one is via app, the other is at kiosk) and the temporal relationships between the use case of renting a bike and the use case of making a payment.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.50]{images/PurchaseTicketAtKiosk.png}
+  \caption{Purchase a Ticket at Kiosk Activity Diagram}
+  \label{fig:Purchase a Ticket at Kiosk Activity Diagram}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.60]{images/PurchaseTicketViaApp.png}
+  \caption{Purchase a Ticket via App Activity Diagram}
+  \label{fig:Purchase a Ticket via app Activity Diagram}
+\end{figure}
+
+\subsubsection{Returning a bike}
+This use case activity model shows the steps to return a bike at the docking station.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.60]{images/UserActivityDiagramReturnBike.png}
+  \caption{User activity for returning a bike}
+  \label{fig:return_bike}
+\end{figure}
+
+
+\subsubsection{Award Points}
+This use case model shows the award points that the user obtains once he rents and returns a bike.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.60]{images/AwardPointsActivityDiagram.png}
+  \caption{Earning award points}
+  \label{fig:Earning_awards}
+\end{figure}
+
+\newpage
+\subsubsection{Purchasing a membership}
+This activity model shows the scenario of purchasing a membership from the application.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.55]{images/PurchaseMembershipActivity.png}
+  \caption{Purchase Membership Activity Diagram}
+  \label{fig:Purchase Membership Activity Diagram}
+\end{figure}
+
+
+
+
+
+
