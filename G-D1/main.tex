@@ -1,0 +1,68 @@
+\documentclass[12pt,letterpaper]{report}
+
+%% Language and font encodings
+%% Useful packages
+% \usepackage[english]{babel}
+% \usepackage{float}
+% \usepackage[utf8x]{inputenc}
+% \usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{textcomp}
+\usepackage{pdfpages}
+\usepackage{adjustbox,lipsum}
+\usepackage{subfig}
+\usepackage{comment}
+\usepackage{float}
+
+
+\begin{document}
+\input{title/title.tex}
+
+\begin{abstract}
+\textbf{\textit{The solution domain is where engineers use their ingenuity to solve problems. The objective of this project is to collaborate with a collection of related artifacts to solve the problem and construct the solution domain of software that is manageable, secure and sustainable. One of the characteristics that distinguish the solution domain from the problem domain is that requirements engineering in the solution domain begins invariably with a given set of objectives. The final project will undergo an engineering process in three deliverables. The software has been selected to undergo the process of creating a solution domain for a usable ticket vending machine.}}
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\listoffigures\addcontentsline{toc}{chapter}{List of Figures}
+\listoftables\addcontentsline{toc}{chapter}{List of Tables}
+\pagebreak
+\pagenumbering{arabic}
+\setcounter{page}{1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\titleformat{\chapter}{\bf\huge}{\thechapter}{18pt}{\huge\vspace{-.5em}}
+\input{sections/introduction}
+\input{sections/problems.tex}
+\input{sections/conclusion.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\chapter{Appendix}\label{Appendix}
+\input{sections/appendixA.tex}
+\newpage
+\input{sections/appendixB.tex}
+\newpage
+\input{sections/appendixC.tex}
+\newpage
+\input{sections/appendixD.tex}
+
+\pagebreak
+\includepdf[pages=-]{OtherFiles/RolesAndResponsibilities.pdf}
+\pagebreak
+
+\nocite{*}
+\renewcommand{\bibname}{References}
+\bibliographystyle{plain}
+\bibliography{bibs/References.bib}
+
+\end{document}
