@@ -1,13 +1,18 @@
 create database tvm;
 
+create table auth(
+		customer_id varchar(15) PRIMARY KEY,
+        pwd varchar(15)
+);
+
 create table customers(
 	customer_id varchar(15) PRIMARY KEY,
     c_name varchar(25) NOT NULL,
     c_age int,
     c_mail varchar(35),
-    c_password varchar(10),
     c_phone int,
-    outstanding_bill int DEFAULT(0)
+    outstanding_bill int DEFAULT(0),
+    FOREIGN KEY (customer_id) REFERENCES auth(customer_id)
 );
 
 create table bikes(
@@ -43,14 +48,11 @@ create table docks(
 
 create table stations(
 	station_code varchar(8) PRIMARY KEY,
-    dock_id varchar(10),
+    dock_id varchar(10) PRIMARY KEY,
     FOREIGN KEY (dock_id) REFERENCES docks(dock_id)
 );
 
-create table auth(
-		customer_id varchar(15),
-        pwd varchar(15)
-);
+
 
 
     
