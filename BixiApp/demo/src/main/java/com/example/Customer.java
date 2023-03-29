@@ -6,9 +6,17 @@ public class Customer {
     private String c_name;
     private int c_age;
     private String c_mail;
-    private String c_password;
     private int c_phone;
     private int outstanding_bill;
+    
+    public Customer(String customer_id, String c_name, int c_age, String c_mail, int c_phone, int bill) {
+    	this.customer_id = customer_id;
+    	this.c_age = c_age;
+    	this.c_mail = c_mail;
+    	this.c_name = c_name;
+    	this.c_phone = c_phone;
+    	this.outstanding_bill = bill;
+    }
     
     public String getCustomer_Id() {
     	return this.customer_id;    	
@@ -22,9 +30,6 @@ public class Customer {
     	return this.c_mail;
     }
     
-    public String getC_Password() {
-    	return this.c_password;
-    }
     
     public int getC_Age() {
     	return this.c_age;
@@ -48,10 +53,6 @@ public class Customer {
     
     public void setC_Mail(String c_mail) {
     	this.c_mail=c_mail;
-    }
-    
-    public void setC_Password(String c_pwd) {
-    	this.c_password = c_pwd;
     }
     
     public void setC_Age(int c_age) {

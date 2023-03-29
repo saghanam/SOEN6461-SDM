@@ -5,6 +5,18 @@ public class Dock {
     private UnlockCode unlock_code;
     private Bike bike; 
     
+    public Dock(String dock_id) {
+    	this.dock_id = dock_id;
+    	this.unlock_code = null;
+    	this.bike = null;
+    }
+    
+    public Dock(String dock_id, Bike bk) {
+    	this.dock_id = dock_id;
+    	this.unlock_code = null;
+    	this.bike = bk;
+    }
+    
     public String getDock_Id() {
     	return this.dock_id;
     }

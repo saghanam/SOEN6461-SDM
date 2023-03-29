@@ -6,6 +6,11 @@ public class UnlockCode {
 	private int unlock_code;
 	private LocalDateTime start;
 	
+	public UnlockCode(int uc, LocalDateTime strt) {
+		this.unlock_code = uc;
+		this.start = strt;
+	}
+	
 	public int getUnlock_Code() {
 		return this.unlock_code;
 	}
