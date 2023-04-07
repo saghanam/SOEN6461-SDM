@@ -1,4 +1,4 @@
-package controller;
+package com.example;
 
 import org.controlsfx.control.Notifications;
 

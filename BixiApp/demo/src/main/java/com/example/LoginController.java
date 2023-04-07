@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package com.example;
 
 import database.DbConnection;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -69,11 +70,13 @@ public class LoginController implements Initializable {
                 // rs = ps.executeQuery();
 
                 // if (rs.next()) {
+                    System.out.println("Hello");
 
                     Stage stage = (Stage) loginButton.getScene().getWindow();
                     stage.close();
 
-                    Parent root = FXMLLoader.load(getClass().getResource("/view/MainPanelView.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("MainPanelView.fxml"));
+                    System.out.println("Loading");
 
                     Scene scene = new Scene(root);
 
@@ -123,7 +126,7 @@ public class LoginController implements Initializable {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.close();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/view/RegisterView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("RegisterView.fxml"));
 
         Scene scene = new Scene(root);
 

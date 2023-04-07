@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package com.example;
 
 import database.DbConnection;
 import java.io.IOException;
@@ -197,7 +197,7 @@ public class RegisterController implements Initializable {
         Stage stage = (Stage) registerButton.getScene().getWindow();
         stage.close();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/view/LoginView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("LoginView.fxml"));
 
         Scene scene = new Scene(root);
 
