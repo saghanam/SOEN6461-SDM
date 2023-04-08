@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.RentController">
+   <children>
+      <Label layoutX="189.0" layoutY="129.0" text="Please select the station" textFill="WHITE">
+         <font>
+            <Font size="30.0" />
+         </font></Label>
+      <ChoiceBox fx:id="stationSelection" layoutX="672.0" layoutY="134.0" nodeOrientation="LEFT_TO_RIGHT" prefWidth="150.0" />
+      <Label fx:id="dockLabel" alignment="CENTER" layoutX="60.0" layoutY="235.0" prefHeight="130.0" prefWidth="544.0" text="Please select the dock you want to unlock" textFill="WHITE" wrapText="true">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="dockSelection" disable="true" layoutX="672.0" layoutY="274.0" prefWidth="150.0" />
+   </children>
+</AnchorPane>

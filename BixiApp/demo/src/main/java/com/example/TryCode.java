@@ -76,6 +76,24 @@ public class TryCode {
 			return null;
 		}		
 	}
+
+	public static ArrayList<Dock> getAvailableDocks(String area_code, Connection con){
+		try {
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id INNER JOIN bikes on docks.bike_id= bikes.bike_id where stations.station_code='"+ area_code +"' and docks.bike_id <> 'UNASSIGNED'");
+			ArrayList<Dock> available = new ArrayList<>();
+			while(rs.next()) {
+				Bike bk = new Bike(rs.getString(5), rs.getString(7));
+				Dock dk = new Dock(rs.getString(2) , bk);
+				available.add(dk);
+			}
+			return available;
+		}
+		catch(Exception e) {
+			e.printStackTrace(System.out);
+			return null;
+		}
+	}
 	
 	private static int codeGenerator() {
 		int min = 1; 
