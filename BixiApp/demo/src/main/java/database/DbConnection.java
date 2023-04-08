@@ -23,12 +23,12 @@ public class DbConnection {
         // // Properties p=new Properties ();
         // // p.load(fis);
         String url = "jdbc:mysql://localhost:3306/tvm";
-        Properties info = new Properties();
-        info.put("user", "root");
-        info.put("password", "sdm@23");
         String username = "root";
         String password = "sdm@23";
-
+        
+        Properties info = new Properties();
+        info.put("user", username);
+        info.put("password", password);
         System.out.println("Connecting database...");
 
         try {
@@ -36,6 +36,7 @@ public class DbConnection {
             Connection connection = DriverManager.getConnection(url, info);
             if (connection != null) {
                 System.out.println("Database connected!");
+                con = connection;
             }
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
