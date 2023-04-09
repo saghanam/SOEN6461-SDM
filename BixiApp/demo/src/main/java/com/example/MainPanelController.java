@@ -109,4 +109,10 @@ public class MainPanelController implements Initializable {
         loadFXML("HomeView");
         changeButtonBackground(e);
     }
+
+    @FXML
+    private void loadRentView(ActionEvent e) {
+        loadFXML("RentView");
+        changeButtonBackground(e);
+    }
 }
