@@ -77,7 +77,7 @@ public class TryCode {
 		}		
 	}
 
-	public static ArrayList<Dock> getAvailableDocks(String area_code, Connection con){
+	public static ArrayList<Dock> getAvailableDocksForRent(String area_code, Connection con){
 		try {
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id INNER JOIN bikes on docks.bike_id= bikes.bike_id where stations.station_code='"+ area_code +"' and docks.bike_id <> 'UNASSIGNED'");
@@ -107,7 +107,7 @@ public class TryCode {
 	    return code;
 	}
 	
-	public static UnlockCode issueUnlockCode ( Customer cust,  Dock dk, Connection con ) {
+	public static UnlockCode issueUnlockCode (Dock dk, Connection con) {
 		int code = codeGenerator();
 		LocalDateTime strt = LocalDateTime.now(); 
 		UnlockCode uc = new UnlockCode(code, strt);
@@ -122,8 +122,7 @@ public class TryCode {
             
             PreparedStatement preparedStatement2 = con.prepareStatement ( query2 ) ;
             preparedStatement2.setObject ( 1, uc.getUnlock_Code() );
-            System.out.println(dk.getDock_Id());
-            preparedStatement2.setObject ( 2, dk.getDock_Id() );            
+            preparedStatement2.setObject ( 2, dk.getDock_Id() );
             preparedStatement2.executeUpdate ( );
             
         }
@@ -146,7 +145,7 @@ public class TryCode {
 				System.out.println("login successfull");
 				ArrayList<Dock> avl = getAvailable(cust, "ATW", con );
 				if (avl!=null) {
-					UnlockCode uc = issueUnlockCode ( cust,  avl.get(0), con );
+					UnlockCode uc = issueUnlockCode (avl.get(0), con );
 					System.out.println(uc.getUnlock_Code());
 				}
 			}
