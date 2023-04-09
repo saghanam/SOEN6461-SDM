@@ -18,5 +18,15 @@
          </font>
       </Label>
       <ChoiceBox fx:id="dockSelection" disable="true" layoutX="672.0" layoutY="274.0" prefWidth="150.0" />
+      <Label fx:id="unlockCodeLabel" alignment="CENTER" layoutY="419.0" prefHeight="17.0" prefWidth="1200.0" text="Label" textFill="WHITE">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="unlockCodeText" alignment="CENTER" layoutX="1.0" layoutY="496.0" prefHeight="17.0" prefWidth="1200.0" text="Label" textFill="RED">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
