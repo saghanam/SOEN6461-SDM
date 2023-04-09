@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class RentController implements Initializable {
     public static final String SELECT_STATION = "Please select the dock \nyou want to unlock";
-    public static final String REMEMBER_CODE = "Please remember the code and use it within 15 minutes";
+    public static final String REMEMBER_CODE = "Please remember the code and use it within 5 minutes";
 
     @FXML
     private ChoiceBox<String> stationSelection;
