@@ -1,38 +1,39 @@
 package com.example;
 
+import database.DbConnection;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
+import javafx.scene.input.InputMethodEvent;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class UnlockController implements Initializable {
-    public static final String SELECT_STATION = "Please select the dock \nyou want to unlock";
-    public static final String REMEMBER_CODE = "Please remember the code and use it within 5 minutes";
     public static final int CODE_LENGTH = 5;
 
     @FXML
-    private ChoiceBox<String> stationSelection;
-    @FXML
-    private Label dockLabel;
-    @FXML
-    private ChoiceBox<String> dockSelection;
-    @FXML
-    private Label unlockCodeLabel;
-    @FXML
     private TextField unlockCodeInput;
-
-    private List<Dock> availableDocks;
+    @FXML
+    private Button unlockButton;
+    @FXML
+    private Label warningLabel;
+    @FXML
+    private Label receiptLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setInputMaxLength(CODE_LENGTH);
-        unlockCodeInput.setTextFormatter(getFormatter());
+        addChangeListener();
+        unlockButton.setOnAction(this::unlock);
+//        unlockCodeInput.setTextFormatter(getFormatter());
+//        unlockCodeInput.setOnInputMethodTextChanged(this::enterCode);
+    }
+
+    public void enterCode(InputMethodEvent inputMethodEvent) {
+        System.out.println(unlockCodeInput.getText());
     }
 
     private TextFormatter<String> getFormatter() {
@@ -48,13 +49,48 @@ public class UnlockController implements Initializable {
         return textFormatter;
     }
 
-    private void setInputMaxLength(int maxLength) {
+    private void addChangeListener() {
         unlockCodeInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(newValue);
-            if (newValue.length() > maxLength) {
+            warningLabel.setVisible(false);
+            receiptLabel.setVisible(false);
+            System.out.println("New Value: " + newValue + " Old Value: " + newValue.length());
+            if (newValue.length() > 5) {
                 unlockCodeInput.setText(oldValue);
+            } else {
+                unlockButton.setDisable(newValue.length() != 5);
             }
         });
+    }
+
+    private void unlock(ActionEvent event) {
+        String codeInput = unlockCodeInput.getText();
+        System.out.println(codeInput);
+
+        if (!codeInput.matches("\\d+")) {
+            warningLabel.setVisible(true);
+            return;
+        }
+
+        Customer currentUser = getCustomer();
+        String unlockResult = TryCode.issueBike(currentUser, Integer.parseInt(codeInput), getDatabaseConnection());
+
+        System.out.println(unlockResult);
+        if (unlockResult.startsWith("Error")) {
+            warningLabel.setText(unlockResult.substring(7));
+            warningLabel.setVisible(true);
+            return;
+        }
+
+        receiptLabel.setText(unlockResult);
+        receiptLabel.setVisible(true);
+    }
+
+    private Customer getCustomer() {
+        return new Customer("CVER2348", "Yong Tang", 22, "yt@gm.com", 1242222633, 0);
+    }
+
+    private Connection getDatabaseConnection() {
+        return DbConnection.getDatabaseConnection().getConnection();
     }
 
 }

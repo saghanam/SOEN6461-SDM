@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.UnlockController">
    <children>
-      <VBox alignment="CENTER" layoutX="450.0" layoutY="146.0" prefHeight="309.0" prefWidth="300.0">
+      <VBox alignment="CENTER" layoutX="450.0" layoutY="24.0" prefHeight="431.0" prefWidth="300.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="TOP" prefHeight="98.0" prefWidth="300.0" text="Please enter 5 digit unlock code" textAlignment="CENTER" wrapText="true">
+            <Label fx:id="receiptLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" prefHeight="133.0" prefWidth="300.0" textFill="blue" visible="false" wrapText="true" />
+            <Label alignment="CENTER" contentDisplay="TOP" prefHeight="98.0" prefWidth="300.0" text="Please enter 5 digit unlock code" textAlignment="CENTER" textFill="white" wrapText="true">
                <font>
                   <Font size="30.0" />
                </font>
             </Label>
-            <TextField fx:id="unlockCodeInput" alignment="CENTER" prefHeight="56.0" prefWidth="300.0" style="-fx-text-fill: blue;">
+            <TextField fx:id="unlockCodeInput" alignment="CENTER" onInputMethodTextChanged="#enterCode" prefHeight="56.0" prefWidth="300.0" style="-fx-text-fill: blue;">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font></TextField>
+            <Label fx:id="warningLabel" alignment="CENTER" contentDisplay="CENTER" disable="true" prefHeight="56.0" prefWidth="300.0" text="Code contains only numbers" textFill="RED" visible="false">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Button fx:id="unlockButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="44.0" prefWidth="97.0" style="-fx-background-color: #3c93da;" text="UNLOCK" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
    </children>
