@@ -4,6 +4,7 @@ import database.DbConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class RentController implements Initializable {
     public static final String SELECT_STATION = "Please select the dock \nyou want to unlock";
     public static final String REMEMBER_CODE = "Please remember the code and use it within 5 minutes";
+    public static final String NO_AVAILABLE_DOCK_WARNING = "No available dock for the selected station\nPlease select another station";
 
     @FXML
     private ChoiceBox<String> stationSelection;
@@ -32,6 +34,8 @@ public class RentController implements Initializable {
     private Label unlockCodeLabel;
     @FXML
     private Label unlockCodeText;
+    @FXML
+    private Button getCodeButton;
 
     private List<Dock> availableDocks;
 
@@ -47,6 +51,8 @@ public class RentController implements Initializable {
         stationSelection.setOnAction(this::selectStation);
 
         dockSelection.setOnAction(this::selectDock);
+
+        getCodeButton.setOnAction(this::getUnlockCode);
     }
 
     private Connection getDatabaseConnection() {
@@ -74,6 +80,7 @@ public class RentController implements Initializable {
     }
 
     private void selectStation(ActionEvent event) {
+        getCodeButton.setDisable(true);
         String selectedStationCode = stationSelection.getValue();
 
         if (selectedStationCode == null) {
@@ -81,6 +88,9 @@ public class RentController implements Initializable {
             clearDockOptions();
             hideUnlockCodeComponents();
             clearUnlockCodeData();
+
+            unlockCodeText.setText(NO_AVAILABLE_DOCK_WARNING);
+            unlockCodeText.setVisible(true);
         } else {
             dockSelection.setDisable(false);
             populateAvailableDocks(selectedStationCode);
@@ -88,6 +98,10 @@ public class RentController implements Initializable {
     }
 
     private void selectDock(ActionEvent event) {
+        getCodeButton.setDisable(dockSelection.getValue() == null);
+    }
+
+    private void getUnlockCode(ActionEvent event) {
         String selectedDockId = dockSelection.getValue();
 
         Optional<Dock> selectedDock = availableDocks.stream().filter(dock -> dock.getDock_Id().equals(selectedDockId)).findFirst();
