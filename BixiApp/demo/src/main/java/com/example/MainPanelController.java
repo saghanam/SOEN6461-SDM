@@ -113,6 +113,16 @@ public class MainPanelController implements Initializable {
     @FXML
     private void loadRentView(ActionEvent e) {
         loadFXML("RentView");
+        Stage stage = (Stage) borderPane.getScene().getWindow();
+        stage.setTitle("Rent");
+        changeButtonBackground(e);
+    }
+
+    @FXML
+    private void loadUnlockView(ActionEvent e) {
+        loadFXML("UnlockView");
+        Stage stage = (Stage) borderPane.getScene().getWindow();
+        stage.setTitle("Unlock");
         changeButtonBackground(e);
     }
 }

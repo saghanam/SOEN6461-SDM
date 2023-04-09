@@ -84,7 +84,7 @@ public class TryCode {
 	public static ArrayList<Dock> getAvailableDocksForRent(String area_code, Connection con){
 		try {
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id INNER JOIN bikes on docks.bike_id= bikes.bike_id where stations.station_code='"+ area_code +"' and docks.bike_id <> 'UNASSIGNED'");
+			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id INNER JOIN bikes on docks.bike_id= bikes.bike_id where stations.station_code='"+ area_code +"' and docks.bike_id IS NOT NULL");
 			ArrayList<Dock> available = new ArrayList<>();
 			while(rs.next()) {
 				Bike bk = new Bike(rs.getString(5), rs.getString(7));

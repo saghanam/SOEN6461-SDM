@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" layoutX="450.0" layoutY="146.0" prefHeight="309.0" prefWidth="300.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="TOP" prefHeight="98.0" prefWidth="300.0" text="Please enter 5 digit unlock code" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <TextField fx:id="unlockCodeInput" alignment="CENTER" prefHeight="56.0" prefWidth="300.0" style="-fx-text-fill: blue;">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font></TextField>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
