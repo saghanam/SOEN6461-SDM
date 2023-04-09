@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.example;
 
 import database.DbConnection;
@@ -13,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import com.example.TryCode;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,7 +24,7 @@ import javafx.stage.Window;
 
 /**
  *
- * @author Ramesh Godara
+ * @author Saghana Mahesh Sarma
  */
 public class LoginController implements Initializable {
 
@@ -53,31 +49,25 @@ public class LoginController implements Initializable {
     public LoginController() {
         DbConnection dbc = DbConnection.getDatabaseConnection();
         con = dbc.getConnection();
+        System.out.println(con);
     }
 
     @FXML
     private void login() throws Exception {
 
         if (this.isValidated()) {
-            PreparedStatement ps;
-            ResultSet rs;
 
-            String query = "select * from users WHERE user_name = ? and password = ?";
+            Customer result;
+
             try {
-                // ps = con.prepareStatement(query);
-                // ps.setString(1, username.getText());
-                // ps.setString(2, password.getText());
-                // rs = ps.executeQuery();
+                result = TryCode.login(username.getText(),password.getText(),con);
+                System.out.println(result);
 
-                // if (rs.next()) {
-                    System.out.println("Hello");
-
+                if (result != null) {
                     Stage stage = (Stage) loginButton.getScene().getWindow();
                     stage.close();
 
                     Parent root = FXMLLoader.load(getClass().getResource("MainPanelView.fxml"));
-                    System.out.println("Loading");
-
                     Scene scene = new Scene(root);
 
                     stage.setScene(scene);
@@ -85,11 +75,11 @@ public class LoginController implements Initializable {
                     stage.getIcons().add(new Image("/asset/icon.png"));
                     stage.show();
 
-                // } else {
-                //     AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
-                //             "Invalid username and password.");
-                //     username.requestFocus();
-                // }
+                } else {
+                    AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
+                            "Invalid username and password.");
+                    username.requestFocus();
+                }
             } catch (Exception ex) {
                 System.out.println(ex);
             }

@@ -35,7 +35,7 @@
                </font>
             </Text>
             <TextField fx:id="firstName" layoutX="49.0" layoutY="76.0" prefHeight="25.0" prefWidth="202.0" promptText="First Name" style="-fx-background-color: transparent; -fx-border-color: #404040; -fx-border-width: 0px 0px 2px 0px;" />
-            <TextField fx:id="lastName" layoutX="49.0" layoutY="113.0" prefHeight="25.0" prefWidth="202.0" promptText="Last Name" style="-fx-background-color: transparent; -fx-border-color: #404040; -fx-border-width: 0px 0px 2px 0px;" />
+            <TextField fx:id="age" layoutX="49.0" layoutY="113.0" prefHeight="25.0" prefWidth="202.0" promptText="Age" style="-fx-background-color: transparent; -fx-border-color: #404040; -fx-border-width: 0px 0px 2px 0px;" />
             <TextField fx:id="email" layoutX="49.0" layoutY="147.0" prefHeight="25.0" prefWidth="202.0" promptText="Email" style="-fx-background-color: transparent; -fx-border-color: #404040; -fx-border-width: 0px 0px 2px 0px;" />
             <TextField fx:id="username" layoutX="49.0" layoutY="183.0" prefHeight="25.0" prefWidth="202.0" promptText="Username" style="-fx-background-color: transparent; -fx-border-color: #404040; -fx-border-width: 0px 0px 2px 0px;" />
             <PasswordField fx:id="password" layoutX="49.0" layoutY="219.0" prefHeight="25.0" prefWidth="202.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: #404040; -fx-border-width: 0px 0px 2px 0px;" />

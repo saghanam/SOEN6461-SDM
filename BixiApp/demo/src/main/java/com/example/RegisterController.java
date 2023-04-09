@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.example;
 
 import database.DbConnection;
@@ -28,17 +23,14 @@ import javafx.stage.Window;
 
 /**
  *
- * @author Ramesh Godara
+ * @author Saghana Mahesh Sarma
  */
 public class RegisterController implements Initializable {
 
     private final Connection con;
 
     @FXML
-    private TextField firstName;
-
-    @FXML
-    private TextField lastName;
+    private TextField userName;
 
     @FXML
     private TextField email;
@@ -77,8 +69,7 @@ public class RegisterController implements Initializable {
                 stmt = con.createStatement();
                 String query = "insert into users (first_name,last_name,email,user_name,password)values (?,?,?,?,?)";
                 ps = con.prepareStatement(query);
-                ps.setString(1, firstName.getText());
-                ps.setString(2, lastName.getText());
+                ps.setString(1, userName.getText());
                 ps.setString(3, email.getText());
                 ps.setString(4, username.getText());
                 ps.setString(5, password.getText());
@@ -120,23 +111,15 @@ public class RegisterController implements Initializable {
     private boolean isValidated() {
 
         window = registerButton.getScene().getWindow();
-        if (firstName.getText().equals("")) {
+        if (userName.getText().equals("")) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
                     "First name text field cannot be blank.");
-            firstName.requestFocus();
-        } else if (firstName.getText().length() < 2 || firstName.getText().length() > 25) {
+            userName.requestFocus();
+        } else if (userName.getText().length() < 2 || userName.getText().length() > 25) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
                     "First name text field cannot be less than 2 and greator than 25 characters.");
-            firstName.requestFocus();
-        } else if (lastName.getText().equals("")) {
-            AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
-                    "Last name text field cannot be blank.");
-            lastName.requestFocus();
-        } else if (lastName.getText().length() < 2 || lastName.getText().length() > 25) {
-            AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
-                    "Last name text field cannot be less than 2 and greator than 25 characters.");
-            lastName.requestFocus();
-        } else if (email.getText().equals("")) {
+            userName.requestFocus();
+        }else if (email.getText().equals("")) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
                     "Email text field cannot be blank.");
             email.requestFocus();
@@ -183,8 +166,7 @@ public class RegisterController implements Initializable {
     }
 
     private boolean clearForm() {
-        firstName.clear();
-        lastName.clear();
+        userName.clear();
         email.clear();
         username.clear();
         password.clear();

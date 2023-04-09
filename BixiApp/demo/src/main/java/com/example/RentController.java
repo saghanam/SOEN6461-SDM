@@ -47,6 +47,8 @@ public class RentController implements Initializable {
         stationSelection.setOnAction(this::selectStation);
 
         dockSelection.setOnAction(this::selectDock);
+
+
     }
 
     private Connection getDatabaseConnection() {
@@ -55,6 +57,8 @@ public class RentController implements Initializable {
 
     private List<String> generateStationOptions() {
         Connection connection = getDatabaseConnection();
+        UserSession us = UserSession.getInstance(null, null);
+        System.out.println(us.getCustomerId());
 
         try {
             Statement statement = connection.createStatement();

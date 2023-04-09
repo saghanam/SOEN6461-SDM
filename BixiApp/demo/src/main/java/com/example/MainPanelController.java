@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Ramesh Godara
+ * @author Saghana Mahesh Sarma
  */
 public class MainPanelController implements Initializable {
 
@@ -91,6 +91,9 @@ public class MainPanelController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("LoginView.fxml"));
 
         Scene scene = new Scene(root);
+        UserSession us = UserSession.getInstance(null,null);
+        us.cleanUserSession();
+        
 
         stage.setScene(scene);
         stage.setTitle("User Login");

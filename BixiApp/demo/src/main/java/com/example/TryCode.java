@@ -18,7 +18,8 @@ public class TryCode {
 
 	public static Customer login(String customer_id, String pwd, Connection con) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println(customer_id+"" + pwd);
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select pwd from auth where customer_id='" + customer_id + "'");
 			if (rs.next()) {
@@ -35,6 +36,7 @@ public class TryCode {
 						int bill = rs2.getInt(6);
 
 						Customer ct = new Customer(customer_id, name, c_age, c_mail, c_phone, bill);
+						UserSession.getInstance(name,customer_id);
 						return ct;
 
 					} catch (Exception e) {
@@ -161,7 +163,7 @@ public class TryCode {
 		}
 
 	}
-	public static String issueBike(Customer cust, int unlockCode, Connection con) {
+	public static String issueBike(String customerId, String userName ,int unlockCode, Connection con) {
 		String getUnlockInfo = "SELECT * FROM unlock_codes WHERE unlock_code = ?";
 		String getDockInfo = "SELECT * FROM docks WHERE unlock_code = ?";
 		String billReceipt;
@@ -198,14 +200,14 @@ public class TryCode {
 					PreparedStatement preparedStatementInsertTrip = con.prepareStatement(insertTripQuery);
 					preparedStatementInsertTrip.setString(1, tripId);
 					preparedStatementInsertTrip.setString(2, bikeId);
-					preparedStatementInsertTrip.setString(3, cust.getCustomer_Id());
+					preparedStatementInsertTrip.setString(3, customerId);
 					preparedStatementInsertTrip.setObject(4, currentTime);
 					preparedStatementInsertTrip.setBoolean(5, true);
 					preparedStatementInsertTrip.executeUpdate();
 
 					billReceipt = "Bill Receipt:\n" +
-							"Customer ID: " + cust.getCustomer_Id() + "\n" +
-							"Name: " + cust.getC_Name() + "\n" +
+							"Customer ID: " + customerId + "\n" +
+							"Name: " + userName + "\n" +
 							"Bike ID: " + bikeId + "\n" +
 							"Unlock Code: " + unlockCode + "\n" +
 							"Start Time: " + currentTime.format(formatter) + "\n" +
@@ -224,7 +226,7 @@ public class TryCode {
 		return billReceipt;
 	}
 
-	public static float returnBike(Customer customer, String bikeId, String dockId, Connection con) {
+	public static float returnBike(String customerId,String bikeId, String dockId, Connection con) {
 		String updateDock = "UPDATE docks SET bike_id = ? WHERE dock_id = ?";
 		String getTripInfo = "SELECT trip_start FROM trips WHERE bike_id = ? AND customer_id = ? AND activeFlag = ?";
 		String setTripEnd = "UPDATE trips SET trip_end = ?, activeFlag = ? WHERE bike_id = ? AND customer_id = ? AND activeFlag = ?";
@@ -238,7 +240,7 @@ public class TryCode {
 
 			PreparedStatement preparedStatementGetTripInfo = con.prepareStatement(getTripInfo);
 			preparedStatementGetTripInfo.setString(1, bikeId);
-			preparedStatementGetTripInfo.setString(2, customer.getCustomer_Id());
+			preparedStatementGetTripInfo.setString(2, customerId);
 			preparedStatementGetTripInfo.setBoolean(3, true);
 			ResultSet resultSet = preparedStatementGetTripInfo.executeQuery();
 
@@ -250,7 +252,7 @@ public class TryCode {
 				preparedStatementSetTripEnd.setObject(1, tripEnd);
 				preparedStatementSetTripEnd.setBoolean(2, false);
 				preparedStatementSetTripEnd.setString(3, bikeId);
-				preparedStatementSetTripEnd.setString(4, customer.getCustomer_Id());
+				preparedStatementSetTripEnd.setString(4, customerId);
 				preparedStatementSetTripEnd.setBoolean(5, true);
 				preparedStatementSetTripEnd.executeUpdate();
 
@@ -269,7 +271,7 @@ public class TryCode {
 			return -1;
 		}
 	}
-	public static String extendTime(Customer customer, String stationNo, String dockingId, Connection con) {
+	public static String extendTime(String customerId, String stationNo, String dockingId, Connection con) {
 		String checkDocks = "SELECT COUNT(*) as dock_count FROM stations WHERE station_code = ? AND dock_id NOT IN (SELECT dock_id FROM docks WHERE bike_id IS NULL)";
 		String getActiveTrip = "SELECT trip_id, trip_start FROM trips WHERE customer_id = ? AND activeFlag = ?";
 		String updateTripStart = "UPDATE trips SET trip_start = ? WHERE trip_id = ?";
@@ -286,7 +288,7 @@ public class TryCode {
 				return "Error: Some docks in the station are empty.";
 			} else {
 				PreparedStatement preparedStatementGetActiveTrip = con.prepareStatement(getActiveTrip);
-				preparedStatementGetActiveTrip.setString(1, customer.getCustomer_Id());
+				preparedStatementGetActiveTrip.setString(1, customerId);
 				preparedStatementGetActiveTrip.setBoolean(2, true);
 				ResultSet resultSetActiveTrip = preparedStatementGetActiveTrip.executeQuery();
 
