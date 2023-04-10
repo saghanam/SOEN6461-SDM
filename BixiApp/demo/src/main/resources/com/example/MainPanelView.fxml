@@ -49,7 +49,15 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="rent1" layoutX="10.0" layoutY="146.0" mnemonicParsing="false" onAction="#loadUnlockView" prefHeight="30.0" prefWidth="172.0" style="-fx-text-fill: #f0f0f0;" styleClass="bt" stylesheets="@mainpanel.css" text="Unlock" textAlignment="JUSTIFY">
+            <Button fx:id="unlock" layoutX="10.0" layoutY="146.0" mnemonicParsing="false" onAction="#loadUnlockView" prefHeight="30.0" prefWidth="172.0" style="-fx-text-fill: #f0f0f0;" styleClass="bt" stylesheets="@mainpanel.css" text="Unlock" textAlignment="JUSTIFY">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="returnBike" layoutX="10.0" layoutY="146.0" mnemonicParsing="false" onAction="#loadReturnView" prefHeight="30.0" prefWidth="172.0" style="-fx-text-fill: #f0f0f0;" styleClass="bt" stylesheets="@mainpanel.css" text="Return" textAlignment="JUSTIFY">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>

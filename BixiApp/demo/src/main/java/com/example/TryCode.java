@@ -101,6 +101,23 @@ public class TryCode {
 		}
 	}
 
+	public static ArrayList<Dock> getAvailableDocksForReturn(String area_code, Connection con){
+		try {
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id where stations.station_code='"+ area_code +"' and docks.bike_id IS NULL");
+			ArrayList<Dock> available = new ArrayList<>();
+			while(rs.next()) {
+				Dock dk = new Dock(rs.getString(2) , null);
+				available.add(dk);
+			}
+			return available;
+		}
+		catch(Exception e) {
+			e.printStackTrace(System.out);
+			return null;
+		}
+	}
+
 	private static int codeGenerator() {
 		int min = 1;
 		int max = 3;

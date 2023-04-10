@@ -128,4 +128,12 @@ public class MainPanelController implements Initializable {
         stage.setTitle("Unlock");
         changeButtonBackground(e);
     }
+
+    @FXML
+    private void loadReturnView(ActionEvent e) {
+        loadFXML("returnView");
+        Stage stage = (Stage) borderPane.getScene().getWindow();
+        stage.setTitle("Return");
+        changeButtonBackground(e);
+    }
 }
