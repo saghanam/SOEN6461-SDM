@@ -9,7 +9,6 @@ import javafx.scene.input.InputMethodEvent;
 
 import java.net.URL;
 import java.sql.Connection;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class UnlockController implements Initializable {
@@ -63,18 +62,19 @@ public class UnlockController implements Initializable {
     }
 
     private void unlock(ActionEvent event) {
+        receiptLabel.setVisible(false);
+
         String codeInput = unlockCodeInput.getText();
-        System.out.println(codeInput);
 
         if (!codeInput.matches("\\d+")) {
             warningLabel.setVisible(true);
             return;
         }
 
-        Customer currentUser = getCustomer();
-        String unlockResult = TryCode.issueBike(currentUser, Integer.parseInt(codeInput), getDatabaseConnection());
+        UserSession us = UserSession.getInstance(null, null);
+        System.out.println(us.getCustomerId() + ", " + us.getUserName());
+        String unlockResult = TryCode.issueBike(us.getCustomerId(), us.getUserName(),  Integer.parseInt(codeInput), getDatabaseConnection());
 
-        System.out.println(unlockResult);
         if (unlockResult.startsWith("Error")) {
             warningLabel.setText(unlockResult.substring(7));
             warningLabel.setVisible(true);
@@ -83,10 +83,6 @@ public class UnlockController implements Initializable {
 
         receiptLabel.setText(unlockResult);
         receiptLabel.setVisible(true);
-    }
-
-    private Customer getCustomer() {
-        return new Customer("CVER2348", "Yong Tang", 22, "yt@gm.com", 1242222633, 0);
     }
 
     private Connection getDatabaseConnection() {
