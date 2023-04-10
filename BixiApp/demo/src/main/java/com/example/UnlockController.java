@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -34,7 +33,7 @@ public class UnlockController implements Initializable {
             warningLabel.setVisible(false);
             receiptLabel.setVisible(false);
             System.out.println("New Value: " + newValue + " Old Value: " + newValue.length());
-            if (newValue.length() > 5) {
+            if (newValue.length() > CODE_LENGTH) {
                 unlockCodeInput.setText(oldValue);
             } else {
                 unlockButton.setDisable(newValue.length() != 5);
@@ -54,7 +53,7 @@ public class UnlockController implements Initializable {
 
         UserSession us = UserSession.getInstance(null, null);
         System.out.println(us.getCustomerId() + ", " + us.getUserName());
-        String unlockResult = TryCode.issueBike(us.getCustomerId(), us.getUserName(),  Integer.parseInt(codeInput), getDatabaseConnection());
+        String unlockResult = TripController.issueBike(us.getCustomerId(), us.getUserName(),  Integer.parseInt(codeInput), getDatabaseConnection());
 
         if (unlockResult.startsWith("Error")) {
             warningLabel.setText(unlockResult.substring(7));

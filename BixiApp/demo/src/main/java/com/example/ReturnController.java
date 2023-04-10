@@ -116,7 +116,7 @@ public class ReturnController implements Initializable {
         String selectedDockId = dockSelection.getValue();
         UserSession us = UserSession.getInstance(null, null);
         
-        float tripCost = TryCode.returnBike(us.getCustomerId(),selectedDockId, getDatabaseConnection());
+        float tripCost = TripController.returnBike(us.getCustomerId(),selectedDockId, getDatabaseConnection());
         System.out.println(tripCost);
 
         PaymentPopup.show(tripCost);
@@ -126,7 +126,7 @@ public class ReturnController implements Initializable {
     private void extendBike(ActionEvent event){
 
         UserSession us = UserSession.getInstance(null, null);
-        boolean extendTime = TryCode.extendTime(us.getCustomerId(),getDatabaseConnection());
+        boolean extendTime = TripController.extendTime(us.getCustomerId(),getDatabaseConnection());
         System.out.println(extendTime);
         if(extendTime){
             MessageUI.showSuccess("Success! Your task has been completed.");
@@ -146,7 +146,7 @@ public class ReturnController implements Initializable {
         // int code = TryCode.returnAction(us.getCustomerId(),stationCode,getDatabaseConnection());
         // System.out.println(code);
 
-        List<Dock> docks = TryCode.getAvailableDocksForReturn(stationCode, getDatabaseConnection());
+        List<Dock> docks = TripController.getAvailableDocksForReturn(stationCode, getDatabaseConnection());
 
         if (docks != null && !docks.isEmpty()) {
             List<String> dockIds = docks.stream().map(Dock::getDock_Id).collect(Collectors.toList());

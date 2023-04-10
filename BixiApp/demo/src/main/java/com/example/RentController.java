@@ -108,7 +108,7 @@ public class RentController implements Initializable {
         Optional<Dock> selectedDock = availableDocks.stream().filter(dock -> dock.getDock_Id().equals(selectedDockId)).findFirst();
         selectedDock.ifPresent(
                 dock -> {
-                    Optional<UnlockCode> unlockCode = Optional.ofNullable(TryCode.issueUnlockCode(dock, getDatabaseConnection()));
+                    Optional<UnlockCode> unlockCode = Optional.ofNullable(TripController.issueUnlockCode(dock, getDatabaseConnection()));
                     unlockCode.ifPresent(
                             code -> {
                                 unlockCodeLabel.setText(REMEMBER_CODE);
@@ -127,7 +127,7 @@ public class RentController implements Initializable {
         hideUnlockCodeComponents();
         clearUnlockCodeData();
 
-        List<Dock> docks = TryCode.getAvailableDocksForRent(stationCode, getDatabaseConnection());
+        List<Dock> docks = TripController.getAvailableDocksForRent(stationCode, getDatabaseConnection());
 
         if (docks != null && !docks.isEmpty()) {
             List<String> dockIds = docks.stream().map(Dock::getDock_Id).collect(Collectors.toList());

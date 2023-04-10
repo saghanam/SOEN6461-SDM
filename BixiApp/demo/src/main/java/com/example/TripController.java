@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class TryCode {
+public class TripController {
 
 	public static Customer login(String customer_id, String pwd, Connection con) {
 		try {
