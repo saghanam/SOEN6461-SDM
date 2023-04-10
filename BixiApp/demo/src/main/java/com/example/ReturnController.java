@@ -15,13 +15,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class RentController implements Initializable {
+public class ReturnController implements Initializable {
     public static final String SELECT_STATION = "Please select the dock \nyou want to unlock";
-    public static final String REMEMBER_CODE = "Please remember the code and use it within 5 minutes";
     public static final String NO_AVAILABLE_DOCK_WARNING = "No available dock for the selected station\nPlease select another station";
 
     @FXML
@@ -35,7 +33,7 @@ public class RentController implements Initializable {
     @FXML
     private Label unlockCodeText;
     @FXML
-    private Button getCodeButton;
+    private Button returnButton;
 
     private List<Dock> availableDocks;
 
@@ -52,7 +50,7 @@ public class RentController implements Initializable {
 
         dockSelection.setOnAction(this::selectDock);
 
-        getCodeButton.setOnAction(this::getUnlockCode);
+        returnButton.setOnAction(this::returnBike);
     }
 
     private Connection getDatabaseConnection() {
@@ -80,7 +78,7 @@ public class RentController implements Initializable {
     }
 
     private void selectStation(ActionEvent event) {
-        getCodeButton.setDisable(true);
+        returnButton.setDisable(true);
         String selectedStationCode = stationSelection.getValue();
 
         if (selectedStationCode == null) {
@@ -100,27 +98,12 @@ public class RentController implements Initializable {
     }
 
     private void selectDock(ActionEvent event) {
-        getCodeButton.setDisable(dockSelection.getValue() == null);
+        returnButton.setDisable(dockSelection.getValue() == null);
     }
 
-    private void getUnlockCode(ActionEvent event) {
+    // To be completed
+    private void returnBike(ActionEvent event) {
         String selectedDockId = dockSelection.getValue();
-
-        Optional<Dock> selectedDock = availableDocks.stream().filter(dock -> dock.getDock_Id().equals(selectedDockId)).findFirst();
-        selectedDock.ifPresent(
-                dock -> {
-                    Optional<UnlockCode> unlockCode = Optional.ofNullable(TryCode.issueUnlockCode(dock, getDatabaseConnection()));
-                    unlockCode.ifPresent(
-                            code -> {
-                                unlockCodeLabel.setText(REMEMBER_CODE);
-                                unlockCodeLabel.setVisible(true);
-
-                                unlockCodeText.setText(String.valueOf(code.getUnlock_Code()));
-                                unlockCodeText.setVisible(true);
-                            }
-                    );
-                }
-        );
     }
 
     private boolean populateAvailableDocks(String stationCode) {
@@ -128,7 +111,7 @@ public class RentController implements Initializable {
         hideUnlockCodeComponents();
         clearUnlockCodeData();
 
-        List<Dock> docks = TryCode.getAvailableDocksForRent(stationCode, getDatabaseConnection());
+        List<Dock> docks = TryCode.getAvailableDocksForReturn(stationCode, getDatabaseConnection());
 
         if (docks != null && !docks.isEmpty()) {
             List<String> dockIds = docks.stream().map(Dock::getDock_Id).collect(Collectors.toList());
