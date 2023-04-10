@@ -61,8 +61,6 @@ public class RentController implements Initializable {
 
     private List<String> generateStationOptions() {
         Connection connection = getDatabaseConnection();
-        UserSession us = UserSession.getInstance(null, null);
-        System.out.println(us.getCustomerId());
 
         try {
             Statement statement = connection.createStatement();
@@ -90,12 +88,14 @@ public class RentController implements Initializable {
             clearDockOptions();
             hideUnlockCodeComponents();
             clearUnlockCodeData();
-
-            unlockCodeText.setText(NO_AVAILABLE_DOCK_WARNING);
-            unlockCodeText.setVisible(true);
         } else {
-            dockSelection.setDisable(false);
-            populateAvailableDocks(selectedStationCode);
+            boolean isPopulated = populateAvailableDocks(selectedStationCode);
+
+            dockSelection.setDisable(!isPopulated);
+            if (!isPopulated) {
+                unlockCodeText.setText(NO_AVAILABLE_DOCK_WARNING);
+                unlockCodeText.setVisible(true);
+            }
         }
     }
 
@@ -123,18 +123,21 @@ public class RentController implements Initializable {
         );
     }
 
-    private void populateAvailableDocks(String stationCode) {
+    private boolean populateAvailableDocks(String stationCode) {
         clearDockOptions();
         hideUnlockCodeComponents();
         clearUnlockCodeData();
 
         List<Dock> docks = TryCode.getAvailableDocksForRent(stationCode, getDatabaseConnection());
 
-        if (docks != null) {
+        if (docks != null && !docks.isEmpty()) {
             List<String> dockIds = docks.stream().map(Dock::getDock_Id).collect(Collectors.toList());
             dockSelection.getItems().addAll(dockIds);
             availableDocks.addAll(docks);
+            return true;
         }
+
+        return false;
     }
 
     private void clearDockOptions() {
