@@ -4,11 +4,7 @@ import database.DbConnection;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-import com.example.TryCode;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -60,7 +56,7 @@ public class LoginController implements Initializable {
             Customer result;
 
             try {
-                result = TryCode.login(username.getText(),password.getText(),con);
+                result = TripController.login(username.getText(),password.getText(),con);
                 System.out.println(result);
 
                 if (result != null) {
