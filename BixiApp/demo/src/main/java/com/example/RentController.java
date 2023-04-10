@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -94,8 +93,7 @@ public class RentController implements Initializable {
 
             dockSelection.setDisable(!isPopulated);
             if (!isPopulated) {
-                unlockCodeText.setText(NO_AVAILABLE_DOCK_WARNING);
-                unlockCodeText.setVisible(true);
+                Warning.display(NO_AVAILABLE_DOCK_WARNING);
             }
         }
     }

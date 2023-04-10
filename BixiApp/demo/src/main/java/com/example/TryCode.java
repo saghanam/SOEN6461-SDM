@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class TryCode {
@@ -149,7 +149,17 @@ public class TryCode {
 	}
 
 	public static UnlockCode issueUnlockCode(Dock dk, Connection con) {
-		int code = codeGenerator();
+		String stationCode = getStationCodeForDock(dk, con);
+		Set<Integer> existingCodes = new HashSet<>();
+
+		if (!stationCode.equals("")) {
+			existingCodes = getExitingUnlockCodes(stationCode, con);
+		}
+
+		int code;
+		do {
+			code = codeGenerator();
+		} while (existingCodes.contains(code));
 		LocalDateTime strt = LocalDateTime.now();
 		UnlockCode uc = new UnlockCode(code, strt);
 
@@ -171,6 +181,46 @@ public class TryCode {
 			return null;
 		}
 		return uc;
+	}
+
+	private static String getStationCodeForDock(Dock dk, Connection con) {
+		String stationCode = "";
+
+		try {
+			Statement statement = con.createStatement();
+			String sql = "SELECT station_code FROM stations INNER JOIN docks ON stations.dock_id = docks.dock_id WHERE docks.dock_id='"+ dk.getDock_Id() +"'";
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			if (resultSet.next()) {
+				stationCode = resultSet.getString(1);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			return stationCode;
+		}
+	}
+
+	private static Set<Integer> getExitingUnlockCodes(String stationCode, Connection con) {
+		Set<Integer> existingCodes = new HashSet<>();
+
+		try {
+			Statement statement = con.createStatement();
+			String sql = "SELECT unlock_code FROM docks INNER JOIN stations ON stations.dock_id = docks.dock_id WHERE stations.station_code='"+ stationCode +"'";
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			while (resultSet.next()) {
+				String code = resultSet.getString(1);
+
+				if (code != null) existingCodes.add(Integer.parseInt(code));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			return existingCodes;
+		}
 	}
 
 	public static void main(String[] args) {
@@ -219,39 +269,43 @@ public class TryCode {
 					PreparedStatement preparedStatementGetDockInfo = con.prepareStatement(getDockInfo);
 					preparedStatementGetDockInfo.setInt(1, unlockCode);
 					ResultSet resultSetDockInfo = preparedStatementGetDockInfo.executeQuery();
-					resultSetDockInfo.next();
-					String dockId = resultSetDockInfo.getString("dock_id");
-					String bikeId = resultSetDockInfo.getString("bike_id");
+					if (resultSetDockInfo.next()) {
+						String dockId = resultSetDockInfo.getString("dock_id");
+						String bikeId = resultSetDockInfo.getString("bike_id");
 
-					// Update dock
-					String updateDockQuery = "UPDATE docks SET bike_id = NULL, unlock_code = NULL WHERE dock_id = ?";
-					PreparedStatement preparedStatementUpdateDock = con.prepareStatement(updateDockQuery);
-					preparedStatementUpdateDock.setString(1, dockId);
-					preparedStatementUpdateDock.executeUpdate();
+						// Update dock
+						String updateDockQuery = "UPDATE docks SET bike_id = NULL, unlock_code = NULL WHERE dock_id = ?";
+						PreparedStatement preparedStatementUpdateDock = con.prepareStatement(updateDockQuery);
+						preparedStatementUpdateDock.setString(1, dockId);
+						preparedStatementUpdateDock.executeUpdate();
 
-					// Insert entry in Trips table
-					String insertTripQuery = "INSERT INTO trips (trip_id, bike_id, customer_id, trip_start, activeFlag) VALUES (?, ?, ?, ?, ?)";
-					String tripId = "T" + System.currentTimeMillis();
-					PreparedStatement preparedStatementInsertTrip = con.prepareStatement(insertTripQuery);
-					preparedStatementInsertTrip.setString(1, tripId);
-					preparedStatementInsertTrip.setString(2, bikeId);
-					preparedStatementInsertTrip.setString(3, customerId);
-					preparedStatementInsertTrip.setObject(4, currentTime);
-					preparedStatementInsertTrip.setBoolean(5, true);
-					preparedStatementInsertTrip.executeUpdate();
+						// Insert entry in Trips table
+						String insertTripQuery = "INSERT INTO trips (trip_id, bike_id, customer_id, trip_start, activeFlag) VALUES (?, ?, ?, ?, ?)";
+						String tripId = "T" + System.currentTimeMillis();
+						PreparedStatement preparedStatementInsertTrip = con.prepareStatement(insertTripQuery);
+						preparedStatementInsertTrip.setString(1, tripId);
+						preparedStatementInsertTrip.setString(2, bikeId);
+						preparedStatementInsertTrip.setString(3, customerId);
+						preparedStatementInsertTrip.setObject(4, currentTime);
+						preparedStatementInsertTrip.setBoolean(5, true);
+						preparedStatementInsertTrip.executeUpdate();
 
-					billReceipt = "Bill Receipt:\n" +
-							"Customer ID: " + customerId + "\n" +
-							"Name: " + userName + "\n" +
-							"Bike ID: " + bikeId + "\n" +
-							"Unlock Code: " + unlockCode + "\n" +
-							"Start Time: " + currentTime.format(formatter) + "\n" +
-							"Happy Riding!";
+						billReceipt = "Bill Receipt:\n" +
+								"Customer ID: " + customerId + "\n" +
+								"Name: " + userName + "\n" +
+								"Bike ID: " + bikeId + "\n" +
+								"Unlock Code: " + unlockCode + "\n" +
+								"Start Time: " + currentTime.format(formatter) + "\n" +
+								"Happy Riding!";
+					} else {
+						billReceipt = "Error: Unlock code is invalid.";
+					}
+
 				} else {
-					billReceipt = "Error: Unlock code is invalid.";
+					billReceipt = "Error: Unlock code is expired.";
 				}
 			} else {
-				billReceipt = "Error: Unlock code not found.";
+				billReceipt = "Error: Unlock code is not found.";
 			}
 		} catch (SQLException e) {
 			e.printStackTrace(System.out);
