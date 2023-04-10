@@ -129,7 +129,7 @@ public class ReturnController implements Initializable {
         boolean extendTime = TripController.extendTime(us.getCustomerId(),getDatabaseConnection());
         System.out.println(extendTime);
         if(extendTime){
-            MessageUI.showSuccess("Success! Your task has been completed.");
+            MessageUI.showSuccess("Success! Time has been extended by 15 minutes for returning the bike.");
             extendButton.setDisable(true);
         }else{
             MessageUI.showFailure("Sorry, an error has occurred.");
