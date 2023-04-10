@@ -1,5 +1,9 @@
 package com.example;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class Customer {
 	
 	private String customer_id;
@@ -66,5 +70,49 @@ public class Customer {
     public void setOutstanding_Bill(int o_bill) {
     	this.outstanding_bill=o_bill;
     }
+    
+    public static Customer login(String customer_id, String pwd, Connection con) {
+		try {
+			System.out.println(customer_id+"" + pwd);
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("select pwd from auth where customer_id='" + customer_id + "'");
+			if (rs.next()) {
+				if (rs.getString(1).equals(pwd)) {
+					try {
+						Statement stmt2 = con.createStatement();
+						ResultSet rs2 = stmt
+								.executeQuery("SELECT * from customers WHERE customer_id='" + customer_id + "'");
+						rs2.next();
+						String name = rs2.getString(2);
+						int c_age = rs2.getInt(3);
+						String c_mail = rs2.getString(4);
+						int c_phone = rs2.getInt(5);
+						int bill = rs2.getInt(6);
+
+						Customer ct = new Customer(customer_id, name, c_age, c_mail, c_phone, bill);
+						UserSession.getInstance(name,customer_id);
+						return ct;
+
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+						e.printStackTrace(System.out);
+						return null;
+					}
+
+				} else {
+
+					return null;
+				}
+			} else {
+				return null;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+			return null;
+
+		}
+	}
 
 }
