@@ -17,7 +17,7 @@
                   <Font size="30.0" />
                </font>
             </Label>
-            <TextField fx:id="unlockCodeInput" alignment="CENTER" onInputMethodTextChanged="#enterCode" prefHeight="56.0" prefWidth="300.0" style="-fx-text-fill: blue;">
+            <TextField fx:id="unlockCodeInput" alignment="CENTER" prefHeight="56.0" prefWidth="300.0" style="-fx-text-fill: blue;">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font></TextField>
