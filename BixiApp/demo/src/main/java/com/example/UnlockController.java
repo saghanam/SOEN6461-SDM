@@ -27,25 +27,6 @@ public class UnlockController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addChangeListener();
         unlockButton.setOnAction(this::unlock);
-//        unlockCodeInput.setTextFormatter(getFormatter());
-//        unlockCodeInput.setOnInputMethodTextChanged(this::enterCode);
-    }
-
-    public void enterCode(InputMethodEvent inputMethodEvent) {
-        System.out.println(unlockCodeInput.getText());
-    }
-
-    private TextFormatter<String> getFormatter() {
-        TextFormatter<String> textFormatter = new TextFormatter<>(change -> {
-            System.out.println(change.toString());
-            if (change.getControlNewText().length() > CODE_LENGTH) {
-                return null;
-            } else {
-                return change;
-            }
-        });
-
-        return textFormatter;
     }
 
     private void addChangeListener() {
@@ -81,8 +62,16 @@ public class UnlockController implements Initializable {
             return;
         }
 
-        receiptLabel.setText(unlockResult);
-        receiptLabel.setVisible(true);
+        showReceiptPopup(unlockResult);
+    }
+
+    private void showReceiptPopup(String body) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Receipt");
+        alert.setHeaderText(null);
+        alert.setContentText(body);
+
+        alert.showAndWait();
     }
 
     private Connection getDatabaseConnection() {
