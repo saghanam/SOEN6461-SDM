@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ReturnController implements Initializable {
     public static final String SELECT_STATION = "Please select the dock \nyou want to unlock";
-    public static final String NO_AVAILABLE_DOCK_WARNING = "No available dock for the selected station\nPlease select another station";
+    public static final String NO_AVAILABLE_DOCK_WARNING = "No available dock for the selected station. Please select another station. \n Click on extend to extend time to return bike to another station.";
 
     @FXML
     private ChoiceBox<String> stationSelection;
@@ -34,6 +34,10 @@ public class ReturnController implements Initializable {
     private Label unlockCodeText;
     @FXML
     private Button returnButton;
+    @FXML
+    private Button extendButton;
+
+    private int extendCount = 0;
 
     private List<Dock> availableDocks;
 
@@ -51,6 +55,8 @@ public class ReturnController implements Initializable {
         dockSelection.setOnAction(this::selectDock);
 
         returnButton.setOnAction(this::returnBike);
+
+        extendButton.setOnAction(this::extendBike);
     }
 
     private Connection getDatabaseConnection() {
@@ -78,6 +84,7 @@ public class ReturnController implements Initializable {
     }
 
     private void selectStation(ActionEvent event) {
+        extendButton.setDisable(true);
         returnButton.setDisable(true);
         String selectedStationCode = stationSelection.getValue();
 
@@ -91,8 +98,11 @@ public class ReturnController implements Initializable {
 
             dockSelection.setDisable(!isPopulated);
             if (!isPopulated) {
-                unlockCodeText.setText(NO_AVAILABLE_DOCK_WARNING);
-                unlockCodeText.setVisible(true);
+                Warning.display(NO_AVAILABLE_DOCK_WARNING);
+                if(extendCount == 0){
+                    extendButton.setDisable(false);
+                }
+                extendCount++;
             }
         }
     }
@@ -104,12 +114,37 @@ public class ReturnController implements Initializable {
     // To be completed
     private void returnBike(ActionEvent event) {
         String selectedDockId = dockSelection.getValue();
+        UserSession us = UserSession.getInstance(null, null);
+        
+        float tripCost = TryCode.returnBike(us.getCustomerId(),selectedDockId, getDatabaseConnection());
+        System.out.println(tripCost);
+
+        PaymentPopup.show(tripCost);
+        returnButton.setDisable(true);
+    }
+
+    private void extendBike(ActionEvent event){
+
+        UserSession us = UserSession.getInstance(null, null);
+        boolean extendTime = TryCode.extendTime(us.getCustomerId(),getDatabaseConnection());
+        System.out.println(extendTime);
+        if(extendTime){
+            MessageUI.showSuccess("Success! Your task has been completed.");
+            extendButton.setDisable(true);
+        }else{
+            MessageUI.showFailure("Sorry, an error has occurred.");
+        }
+
     }
 
     private boolean populateAvailableDocks(String stationCode) {
         clearDockOptions();
         hideUnlockCodeComponents();
         clearUnlockCodeData();
+
+        UserSession us = UserSession.getInstance(null, null);
+        // int code = TryCode.returnAction(us.getCustomerId(),stationCode,getDatabaseConnection());
+        // System.out.println(code);
 
         List<Dock> docks = TryCode.getAvailableDocksForReturn(stationCode, getDatabaseConnection());
 

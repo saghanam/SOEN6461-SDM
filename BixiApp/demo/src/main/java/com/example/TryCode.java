@@ -118,6 +118,24 @@ public class TryCode {
 		}
 	}
 
+	// public static ArrayList<Dock> getAvailableDocksForReturn(String area_code, Connection con){
+	// 	try {
+	// 		Statement stmt=con.createStatement();
+	// 		ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id where stations.station_code='"+ area_code +"' and docks.bike_id = 'UNASSIGNED'");
+	// 		ArrayList<Dock> available = new ArrayList<>();
+	// 		while(rs.next()) {				
+	// 			Dock dk = new Dock(rs.getString("dock_id"));
+	// 			available.add(dk);
+	// 		}
+	// 		return available;
+	// 	}
+	// 	catch(Exception e) {
+	// 		e.printStackTrace(System.out);
+	// 		return null;
+	// 	}
+	// }
+
+
 	private static int codeGenerator() {
 		int min = 1;
 		int max = 3;
@@ -243,33 +261,93 @@ public class TryCode {
 		return billReceipt;
 	}
 
-	public static float returnBike(String customerId,String bikeId, String dockId, Connection con) {
+
+	public static int returnAction(String customer_id, String area_code, Connection con) {
+		ArrayList<Dock> adk = getAvailableDocksForReturn(area_code, con);
+		if ((adk==null) || (adk.isEmpty())) {
+			boolean extendFlag = extendTime(customer_id, con);
+			if (extendFlag==true) {
+				return 1;
+			}
+			else {
+				return -1;
+			}
+		}
+		else {
+			return 2;
+		}
+		
+	}
+	
+	public static boolean extendTime(String customer_id, Connection con) {
+		
+		String getActiveTrip = "SELECT trip_id, trip_start FROM trips WHERE customer_id = ? AND activeFlag = ?";
+		String updateTripStart = "UPDATE trips SET trip_start = ? WHERE trip_id = ?";
+
+		try {		
+
+			if (false) {
+				return false;
+			} else {
+				PreparedStatement preparedStatementGetActiveTrip = con.prepareStatement(getActiveTrip);
+				preparedStatementGetActiveTrip.setString(1, customer_id);
+				preparedStatementGetActiveTrip.setBoolean(2, true);
+				ResultSet resultSetActiveTrip = preparedStatementGetActiveTrip.executeQuery();
+
+				if (resultSetActiveTrip.next()) {
+					String tripId = resultSetActiveTrip.getString("trip_id");
+					LocalDateTime tripStart = resultSetActiveTrip.getTimestamp("trip_start").toLocalDateTime();
+					LocalDateTime newTripStart = tripStart.minus(Duration.ofMinutes(15));
+
+					PreparedStatement preparedStatementUpdateTripStart = con.prepareStatement(updateTripStart);
+					preparedStatementUpdateTripStart.setObject(1, newTripStart);
+					preparedStatementUpdateTripStart.setString(2, tripId);
+					preparedStatementUpdateTripStart.executeUpdate();
+
+					//return "Trip time extended successfully.";
+					return true;
+				} else {
+					return false;
+					//return "Error: No active trip found for the customer.";
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(System.out);
+			return false;
+			//return "Error: Unable to process the request.";
+		}
+	}
+
+	public static float returnBike(String customer_id, String dockId, Connection con) {
+		String getTripInfo = "SELECT trip_start, bike_id FROM trips WHERE customer_id = ? AND activeFlag = ?";
 		String updateDock = "UPDATE docks SET bike_id = ? WHERE dock_id = ?";
-		String getTripInfo = "SELECT trip_start FROM trips WHERE bike_id = ? AND customer_id = ? AND activeFlag = ?";
+		
 		String setTripEnd = "UPDATE trips SET trip_end = ?, activeFlag = ? WHERE bike_id = ? AND customer_id = ? AND activeFlag = ?";
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 		try {
-			PreparedStatement preparedStatementUpdateDock = con.prepareStatement(updateDock);
-			preparedStatementUpdateDock.setString(1, bikeId);
-			preparedStatementUpdateDock.setString(2, dockId);
-			preparedStatementUpdateDock.executeUpdate();
+			
 
 			PreparedStatement preparedStatementGetTripInfo = con.prepareStatement(getTripInfo);
-			preparedStatementGetTripInfo.setString(1, bikeId);
-			preparedStatementGetTripInfo.setString(2, customerId);
-			preparedStatementGetTripInfo.setBoolean(3, true);
+			//preparedStatementGetTripInfo.setString(1, bikeId);
+			preparedStatementGetTripInfo.setString(1,customer_id);
+			preparedStatementGetTripInfo.setBoolean(2, true);
 			ResultSet resultSet = preparedStatementGetTripInfo.executeQuery();
 
 			if (resultSet.next()) {
 				LocalDateTime tripStart = resultSet.getTimestamp("trip_start").toLocalDateTime();
 				LocalDateTime tripEnd = LocalDateTime.now();
+				
+				PreparedStatement preparedStatementUpdateDock = con.prepareStatement(updateDock);
+				preparedStatementUpdateDock.setString(1, resultSet.getString("bike_id"));
+				preparedStatementUpdateDock.setString(2, dockId);
+				preparedStatementUpdateDock.executeUpdate();
 
 				PreparedStatement preparedStatementSetTripEnd = con.prepareStatement(setTripEnd);
 				preparedStatementSetTripEnd.setObject(1, tripEnd);
 				preparedStatementSetTripEnd.setBoolean(2, false);
-				preparedStatementSetTripEnd.setString(3, bikeId);
-				preparedStatementSetTripEnd.setString(4, customerId);
+				preparedStatementSetTripEnd.setString(3, resultSet.getString("bike_id"));
+				preparedStatementSetTripEnd.setString(4, customer_id);
 				preparedStatementSetTripEnd.setBoolean(5, true);
 				preparedStatementSetTripEnd.executeUpdate();
 
@@ -288,46 +366,46 @@ public class TryCode {
 			return -1;
 		}
 	}
-	public static String extendTime(String customerId, String stationNo, String dockingId, Connection con) {
-		String checkDocks = "SELECT COUNT(*) as dock_count FROM stations WHERE station_code = ? AND dock_id NOT IN (SELECT dock_id FROM docks WHERE bike_id IS NULL)";
-		String getActiveTrip = "SELECT trip_id, trip_start FROM trips WHERE customer_id = ? AND activeFlag = ?";
-		String updateTripStart = "UPDATE trips SET trip_start = ? WHERE trip_id = ?";
+	// public static String extendTime(String customerId, String stationNo, String dockingId, Connection con) {
+	// 	String checkDocks = "SELECT COUNT(*) as dock_count FROM stations WHERE station_code = ? AND dock_id NOT IN (SELECT dock_id FROM docks WHERE bike_id IS NULL)";
+	// 	String getActiveTrip = "SELECT trip_id, trip_start FROM trips WHERE customer_id = ? AND activeFlag = ?";
+	// 	String updateTripStart = "UPDATE trips SET trip_start = ? WHERE trip_id = ?";
 
-		try {
-			PreparedStatement preparedStatementCheckDocks = con.prepareStatement(checkDocks);
-			preparedStatementCheckDocks.setString(1, stationNo);
-			ResultSet resultSet = preparedStatementCheckDocks.executeQuery();
+	// 	try {
+	// 		PreparedStatement preparedStatementCheckDocks = con.prepareStatement(checkDocks);
+	// 		preparedStatementCheckDocks.setString(1, stationNo);
+	// 		ResultSet resultSet = preparedStatementCheckDocks.executeQuery();
 
-			resultSet.next();
-			int dockCount = resultSet.getInt("dock_count");
+	// 		resultSet.next();
+	// 		int dockCount = resultSet.getInt("dock_count");
 
-			if (dockCount == 0) {
-				return "Error: Some docks in the station are empty.";
-			} else {
-				PreparedStatement preparedStatementGetActiveTrip = con.prepareStatement(getActiveTrip);
-				preparedStatementGetActiveTrip.setString(1, customerId);
-				preparedStatementGetActiveTrip.setBoolean(2, true);
-				ResultSet resultSetActiveTrip = preparedStatementGetActiveTrip.executeQuery();
+	// 		if (dockCount == 0) {
+	// 			return "Error: Some docks in the station are empty.";
+	// 		} else {
+	// 			PreparedStatement preparedStatementGetActiveTrip = con.prepareStatement(getActiveTrip);
+	// 			preparedStatementGetActiveTrip.setString(1, customerId);
+	// 			preparedStatementGetActiveTrip.setBoolean(2, true);
+	// 			ResultSet resultSetActiveTrip = preparedStatementGetActiveTrip.executeQuery();
 
-				if (resultSetActiveTrip.next()) {
-					String tripId = resultSetActiveTrip.getString("trip_id");
-					LocalDateTime tripStart = resultSetActiveTrip.getTimestamp("trip_start").toLocalDateTime();
-					LocalDateTime newTripStart = tripStart.minus(Duration.ofMinutes(15));
+	// 			if (resultSetActiveTrip.next()) {
+	// 				String tripId = resultSetActiveTrip.getString("trip_id");
+	// 				LocalDateTime tripStart = resultSetActiveTrip.getTimestamp("trip_start").toLocalDateTime();
+	// 				LocalDateTime newTripStart = tripStart.minus(Duration.ofMinutes(15));
 
-					PreparedStatement preparedStatementUpdateTripStart = con.prepareStatement(updateTripStart);
-					preparedStatementUpdateTripStart.setObject(1, newTripStart);
-					preparedStatementUpdateTripStart.setString(2, tripId);
-					preparedStatementUpdateTripStart.executeUpdate();
+	// 				PreparedStatement preparedStatementUpdateTripStart = con.prepareStatement(updateTripStart);
+	// 				preparedStatementUpdateTripStart.setObject(1, newTripStart);
+	// 				preparedStatementUpdateTripStart.setString(2, tripId);
+	// 				preparedStatementUpdateTripStart.executeUpdate();
 
-					return "Trip time extended successfully.";
-				} else {
-					return "Error: No active trip found for the customer.";
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace(System.out);
-			return "Error: Unable to process the request.";
-		}
-	}
+	// 				return "Trip time extended successfully.";
+	// 			} else {
+	// 				return "Error: No active trip found for the customer.";
+	// 			}
+	// 		}
+	// 	} catch (SQLException e) {
+	// 		e.printStackTrace(System.out);
+	// 		return "Error: Unable to process the request.";
+	// 	}
+	// }
 
 }

@@ -102,18 +102,6 @@ public class MainPanelController implements Initializable {
     }
 
     @FXML
-    private void loadPage01View(ActionEvent e) {
-        loadFXML("Page01View");
-        changeButtonBackground(e);
-    }
-
-    @FXML
-    private void loadHomeView(ActionEvent e) {
-        loadFXML("HomeView");
-        changeButtonBackground(e);
-    }
-
-    @FXML
     private void loadRentView(ActionEvent e) {
         loadFXML("RentView");
         Stage stage = (Stage) borderPane.getScene().getWindow();
