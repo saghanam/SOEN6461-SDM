@@ -116,6 +116,8 @@ public class RentController implements Initializable {
 
                                 unlockCodeText.setText(String.valueOf(code.getUnlock_Code()));
                                 unlockCodeText.setVisible(true);
+
+                                getCodeButton.setDisable(true);
                             }
                     );
                 }
