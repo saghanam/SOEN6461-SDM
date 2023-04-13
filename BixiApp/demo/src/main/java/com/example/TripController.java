@@ -404,10 +404,16 @@ public class TripController {
 				preparedStatementSetTripEnd.setString(4, customer_id);
 				preparedStatementSetTripEnd.setBoolean(5, true);
 				preparedStatementSetTripEnd.executeUpdate();
-
-				Duration duration = Duration.between(tripStart, tripEnd);
-				long minutes = duration.toMinutes();
-				float tripCost = (float) (1.25+ 0.15 * minutes);
+				float tripCost;
+				try {
+					Duration duration = Duration.between(tripStart, tripEnd);
+					float minutes = duration.toMinutes();
+					tripCost = (float)(1.25+ 0.15 * minutes);
+					
+				}catch(Exception e) {
+					tripCost = 0;
+				}
+				
 
 				return tripCost;
 			} else {
