@@ -293,7 +293,7 @@ public class TryCode {
 				if (resultSetActiveTrip.next()) {
 					String tripId = resultSetActiveTrip.getString("trip_id");
 					LocalDateTime tripStart = resultSetActiveTrip.getTimestamp("trip_start").toLocalDateTime();
-					LocalDateTime newTripStart = tripStart.minus(Duration.ofMinutes(15));
+					LocalDateTime newTripStart = tripStart.plus(Duration.ofMinutes(15));
 
 					PreparedStatement preparedStatementUpdateTripStart = con.prepareStatement(updateTripStart);
 					preparedStatementUpdateTripStart.setObject(1, newTripStart);
