@@ -219,6 +219,27 @@ public class TripController {
 		}
 	}
 
+	private static Set<Integer> getAllAssignedUnlockCodes(Connection con) {
+		Set<Integer> existingCodes = new HashSet<>();
+
+		try {
+			Statement statement = con.createStatement();
+			String sql = "SELECT unlock_code FROM docks INNER JOIN stations ON stations.dock_id = docks.dock_id";
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			while (resultSet.next()) {
+				String code = resultSet.getString(1);
+
+				if (code != null) existingCodes.add(Integer.parseInt(code));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			return existingCodes;
+		}
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
@@ -245,6 +266,11 @@ public class TripController {
 
 	}
 	public static String issueBike(String customerId, String userName ,int unlockCode, Connection con) {
+		Set<Integer> assignedCodes = getAllAssignedUnlockCodes(con);
+		if (!assignedCodes.contains(unlockCode)) {
+			return "Error: Unlock code is invalid.";
+		}
+
 		String getUnlockInfo = "SELECT * FROM unlock_codes WHERE unlock_code = ? ORDER BY start_time DESC";
 		String getDockInfo = "SELECT * FROM docks WHERE unlock_code = ?";
 		String billReceipt;
@@ -307,7 +333,7 @@ public class TripController {
 					billReceipt = "Error: Unlock code is expired.";
 				}
 			} else {
-				billReceipt = "Error: Unlock code is not found.";
+				billReceipt = "Error: Unlock code is invalid.";
 			}
 		} catch (SQLException e) {
 			e.printStackTrace(System.out);
