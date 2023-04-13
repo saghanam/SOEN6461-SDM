@@ -1,6 +1,7 @@
 package com.example;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -10,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
@@ -17,6 +19,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -29,7 +32,7 @@ public class MainPanelController implements Initializable {
     @FXML
     private BorderPane borderPane;
 
-    private List<Button> menus;
+    private List<Button> buttons;
 
     @FXML
     private AreaChart<?, ?> chartPurchase;
@@ -40,16 +43,25 @@ public class MainPanelController implements Initializable {
     @FXML
     private LineChart<?, ?> chartReceipt;
 
+    @FXML
+    private VBox myBox;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        buttons = new ArrayList<>();
+        for (Node node : myBox.getChildren()) {
+            if (node instanceof Button) {
+                Button button = (Button) node;
+                buttons.add(button);
+            }
+        }
     }
 
     private void changeButtonBackground(ActionEvent e) {
-        Iterator<Button> iteratorMenus = menus.iterator();
+        Iterator<Button> iteratorMenus = buttons.iterator();
 
         while (iteratorMenus.hasNext()) {
             Button clickedButton = (Button) e.getSource();
@@ -97,7 +109,7 @@ public class MainPanelController implements Initializable {
 
         stage.setScene(scene);
         stage.setTitle("User Login");
-        stage.getIcons().add(new Image("/asset/icon.png"));
+        stage.getIcons().add(ResourcesManager.getTitleIcon());
         stage.show();
     }
 

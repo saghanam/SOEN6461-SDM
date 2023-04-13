@@ -20,7 +20,9 @@ import java.util.stream.Collectors;
 
 public class ReturnController implements Initializable {
     public static final String SELECT_STATION = "Please select the dock \nyou want to unlock";
-    public static final String NO_AVAILABLE_DOCK_WARNING = "No available dock for the selected station. Please select another station. \n Click on extend to extend time to return bike to another station.";
+    public static final String NO_AVAILABLE_DOCK_WARNING = "No available dock for the selected station. Please select another station. \nClick on extend to extend time to return bike to another station.";
+    public static final String NOT_ABLE_TO_PROCEED = "Not able to proceed your request.";
+    public static final String NO_ACTIVE_TRIP = "You don't have any active trip currently.";
 
     @FXML
     private ChoiceBox<String> stationSelection;
@@ -102,7 +104,6 @@ public class ReturnController implements Initializable {
                 if(extendCount == 0){
                     extendButton.setDisable(false);
                 }
-                extendCount++;
             }
         }
     }
@@ -115,6 +116,11 @@ public class ReturnController implements Initializable {
     private void returnBike(ActionEvent event) {
         String selectedDockId = dockSelection.getValue();
         UserSession us = UserSession.getInstance(null, null);
+
+        if (!TripController.hasActiveTrip(us.getCustomerId(), getDatabaseConnection())) {
+            Warning.display(NOT_ABLE_TO_PROCEED + "\n" + NO_ACTIVE_TRIP);
+            return;
+        }
         
         float tripCost = TripController.returnBike(us.getCustomerId(),selectedDockId, getDatabaseConnection());
         System.out.println(tripCost);
@@ -124,13 +130,19 @@ public class ReturnController implements Initializable {
     }
 
     private void extendBike(ActionEvent event){
-
         UserSession us = UserSession.getInstance(null, null);
+
+        if (!TripController.hasActiveTrip(us.getCustomerId(), getDatabaseConnection())) {
+            Warning.display(NOT_ABLE_TO_PROCEED + "\n" + NO_ACTIVE_TRIP);
+            return;
+        }
+
         boolean extendTime = TripController.extendTime(us.getCustomerId(),getDatabaseConnection());
         System.out.println(extendTime);
         if(extendTime){
-            MessageUI.showSuccess("Success! Your task has been completed.");
+            MessageUI.showSuccess("Success! Time has been extended by 15 minutes for returning the bike.");
             extendButton.setDisable(true);
+            extendCount++;
         }else{
             MessageUI.showFailure("Sorry, an error has occurred.");
         }

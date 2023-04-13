@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class MessageUI {
     public static void showSuccess(String message) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
+        Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText(null);
         alert.setContentText(message);

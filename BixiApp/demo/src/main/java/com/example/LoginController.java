@@ -68,7 +68,7 @@ public class LoginController implements Initializable {
 
                     stage.setScene(scene);
                     stage.setTitle("Admin Panel");
-                    stage.getIcons().add(new Image("/asset/icon.png"));
+                    stage.getIcons().add(ResourcesManager.getTitleIcon());
                     stage.show();
 
                 } else {
@@ -118,7 +118,7 @@ public class LoginController implements Initializable {
 
         stage.setScene(scene);
         stage.setTitle("User Registration");
-        stage.getIcons().add(new Image("/asset/icon.png"));
+        stage.getIcons().add(ResourcesManager.getTitleIcon());
         stage.show();
     }
 }

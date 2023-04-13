@@ -40,11 +40,6 @@
                   <Font name="Wingdings 3" size="27.0" />
                </font>
             </Text>
-            <Text fill="#404040" layoutX="65.0" layoutY="313.0" onMouseClicked="#showRegisterStage" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account? Register">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Text>
          </children>
       </AnchorPane>
    </right>

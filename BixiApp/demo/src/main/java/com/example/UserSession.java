@@ -31,7 +31,8 @@ public final class UserSession {
     }
 
     public void cleanUserSession() {
-        userName = "";// or null
+        instance = null;
+        System.out.println("User Session is cleared");
     }
 
     @Override

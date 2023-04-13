@@ -17,7 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -30,7 +29,7 @@ public class RegisterController implements Initializable {
     private final Connection con;
 
     @FXML
-    private TextField userName;
+    private TextField firstName;
 
     @FXML
     private TextField email;
@@ -69,7 +68,7 @@ public class RegisterController implements Initializable {
                 stmt = con.createStatement();
                 String query = "insert into users (first_name,last_name,email,user_name,password)values (?,?,?,?,?)";
                 ps = con.prepareStatement(query);
-                ps.setString(1, userName.getText());
+                ps.setString(1, firstName.getText());
                 ps.setString(3, email.getText());
                 ps.setString(4, username.getText());
                 ps.setString(5, password.getText());
@@ -111,14 +110,14 @@ public class RegisterController implements Initializable {
     private boolean isValidated() {
 
         window = registerButton.getScene().getWindow();
-        if (userName.getText().equals("")) {
+        if (firstName.getText().equals("")) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
                     "First name text field cannot be blank.");
-            userName.requestFocus();
-        } else if (userName.getText().length() < 2 || userName.getText().length() > 25) {
+            firstName.requestFocus();
+        } else if (firstName.getText().length() < 2 || firstName.getText().length() > 25) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
                     "First name text field cannot be less than 2 and greator than 25 characters.");
-            userName.requestFocus();
+            firstName.requestFocus();
         }else if (email.getText().equals("")) {
             AlertHelper.showAlert(Alert.AlertType.ERROR, window, "Error",
                     "Email text field cannot be blank.");
@@ -166,7 +165,7 @@ public class RegisterController implements Initializable {
     }
 
     private boolean clearForm() {
-        userName.clear();
+        firstName.clear();
         email.clear();
         username.clear();
         password.clear();
@@ -185,7 +184,7 @@ public class RegisterController implements Initializable {
 
         stage.setScene(scene);
         stage.setTitle("User Login");
-        stage.getIcons().add(new Image("/asset/icon.png"));
+        stage.getIcons().add(ResourcesManager.getTitleIcon());
         stage.show();
     }
 }

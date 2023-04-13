@@ -1,13 +1,9 @@
 package com.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -104,7 +100,7 @@ public class TripController {
 	public static ArrayList<Dock> getAvailableDocksForReturn(String area_code, Connection con){
 		try {
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id where stations.station_code='"+ area_code +"' and docks.bike_id IS NULL");
+			ResultSet rs=stmt.executeQuery("select * from stations INNER JOIN docks ON stations.dock_id = docks.dock_id where ( stations.station_code='"+ area_code +"' AND docks.bike_id IS NULL ) OR ( stations.station_code='" + area_code + "' AND docks.bike_id = '' )");
 			ArrayList<Dock> available = new ArrayList<>();
 			while(rs.next()) {
 				Dock dk = new Dock(rs.getString(2) , null);
@@ -167,7 +163,7 @@ public class TripController {
 		String query2 = "UPDATE docks SET unlock_code = ? where dock_id=?";
 		try {
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setObject(2, uc.getStart());
+			preparedStatement.setObject(2, convertLocalDateTimeToTimeStamp(uc.getStart()));
 			preparedStatement.setObject(1, uc.getUnlock_Code());
 			preparedStatement.executeUpdate();
 
@@ -249,7 +245,7 @@ public class TripController {
 
 	}
 	public static String issueBike(String customerId, String userName ,int unlockCode, Connection con) {
-		String getUnlockInfo = "SELECT * FROM unlock_codes WHERE unlock_code = ?";
+		String getUnlockInfo = "SELECT * FROM unlock_codes WHERE unlock_code = ? ORDER BY start_time DESC";
 		String getDockInfo = "SELECT * FROM docks WHERE unlock_code = ?";
 		String billReceipt;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -260,10 +256,16 @@ public class TripController {
 			ResultSet resultSetUnlockInfo = preparedStatementGetUnlockInfo.executeQuery();
 
 			if (resultSetUnlockInfo.next()) {
-				LocalDateTime startTime = resultSetUnlockInfo.getTimestamp("start_time").toLocalDateTime();
+				Timestamp timestamp = resultSetUnlockInfo.getTimestamp("start_time");
+				String code = resultSetUnlockInfo.getString(1);
+				LocalDateTime startTime = convertTimeStampToLocalDateTime(timestamp);
 				LocalDateTime currentTime = LocalDateTime.now();
 				Duration duration = Duration.between(startTime, currentTime);
 				long diffInMinutes = duration.toMinutes();
+				System.out.println("code: " + code);
+				System.out.println("time stamp: " + timestamp);
+				System.out.println("start: " + startTime + ", end: " + currentTime);
+				System.out.println("Duration: " + diffInMinutes);
 
 				if (diffInMinutes < 5) {
 					PreparedStatement preparedStatementGetDockInfo = con.prepareStatement(getDockInfo);
@@ -286,7 +288,7 @@ public class TripController {
 						preparedStatementInsertTrip.setString(1, tripId);
 						preparedStatementInsertTrip.setString(2, bikeId);
 						preparedStatementInsertTrip.setString(3, customerId);
-						preparedStatementInsertTrip.setObject(4, currentTime);
+						preparedStatementInsertTrip.setObject(4, convertLocalDateTimeToTimeStamp(currentTime));
 						preparedStatementInsertTrip.setBoolean(5, true);
 						preparedStatementInsertTrip.executeUpdate();
 
@@ -313,6 +315,10 @@ public class TripController {
 		}
 
 		return billReceipt;
+	}
+
+	private static LocalDateTime convertTimeStampToLocalDateTime(Timestamp timestamp) {
+		return timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 
@@ -350,11 +356,11 @@ public class TripController {
 
 				if (resultSetActiveTrip.next()) {
 					String tripId = resultSetActiveTrip.getString("trip_id");
-					LocalDateTime tripStart = resultSetActiveTrip.getTimestamp("trip_start").toLocalDateTime();
-					LocalDateTime newTripStart = tripStart.minus(Duration.ofMinutes(15));
+					LocalDateTime tripStart = convertTimeStampToLocalDateTime(resultSetActiveTrip.getTimestamp("trip_start"));
+					LocalDateTime newTripStart = tripStart.plusMinutes(15);
 
 					PreparedStatement preparedStatementUpdateTripStart = con.prepareStatement(updateTripStart);
-					preparedStatementUpdateTripStart.setObject(1, newTripStart);
+					preparedStatementUpdateTripStart.setObject(1, convertLocalDateTimeToTimeStamp(newTripStart));
 					preparedStatementUpdateTripStart.setString(2, tripId);
 					preparedStatementUpdateTripStart.executeUpdate();
 
@@ -370,6 +376,31 @@ public class TripController {
 			return false;
 			//return "Error: Unable to process the request.";
 		}
+	}
+
+	private static Timestamp convertLocalDateTimeToTimeStamp(LocalDateTime newTripStart) {
+		return Timestamp.from(newTripStart.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
+	public static boolean hasActiveTrip(String customerId, Connection con) {
+		String getActiveTrip = "SELECT trip_id, trip_start FROM trips WHERE customer_id = ? AND activeFlag = ?";
+
+		PreparedStatement preparedStatementGetActiveTrip = null;
+		try {
+			preparedStatementGetActiveTrip = con.prepareStatement(getActiveTrip);
+			preparedStatementGetActiveTrip.setString(1, customerId);
+			preparedStatementGetActiveTrip.setBoolean(2, true);
+			ResultSet resultSetActiveTrip = preparedStatementGetActiveTrip.executeQuery();
+
+			if (resultSetActiveTrip.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(System.out);
+			return false;
+		}
+
+		return false;
 	}
 
 	public static float returnBike(String customer_id, String dockId, Connection con) {
@@ -389,7 +420,7 @@ public class TripController {
 			ResultSet resultSet = preparedStatementGetTripInfo.executeQuery();
 
 			if (resultSet.next()) {
-				LocalDateTime tripStart = resultSet.getTimestamp("trip_start").toLocalDateTime();
+				LocalDateTime tripStart = convertTimeStampToLocalDateTime(resultSet.getTimestamp("trip_start"));
 				LocalDateTime tripEnd = LocalDateTime.now();
 				
 				PreparedStatement preparedStatementUpdateDock = con.prepareStatement(updateDock);
@@ -406,7 +437,7 @@ public class TripController {
 				preparedStatementSetTripEnd.executeUpdate();
 
 				Duration duration = Duration.between(tripStart, tripEnd);
-				long minutes = duration.toMinutes();
+				long minutes = Math.max(0, duration.toMinutes());
 				float tripCost = (float) (1.25+ 0.15 * minutes);
 
 				return tripCost;
