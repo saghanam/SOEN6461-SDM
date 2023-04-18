@@ -19,3 +19,7 @@ collection of deliverables.
 WORK DONE FOR DELIVERABLE 1
 The TVM chosen as iGo here is the bixi bike system of Montreal. 
 This contains a latex files with all the problems for deliverable 1 and the interview recordings.
+
+
+WORK DONE FOR DELIVERABLE 2
+This is in the branch deliverable2 that contains all the files for the deliverable. The template for login is referenced from the project https://github.com/inforkgodara/javafx-login-registration-admin-panel to get a better understanding of the login flow. The project can be run by using the command mvn javafx:run 
